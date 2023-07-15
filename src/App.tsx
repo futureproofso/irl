@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { App, View, Page, Navbar, Toolbar, Link } from 'framework7-react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Home from "./pages/Home";
+import Ping from "./pages/Ping";
+import Profile from './pages/Profile';
+import NavBottom from './components/NavBottom';
+
+const f7params = {
+  routes: [
+    {
+      path: '/',
+      component: Home,
+    },
+    {
+      path: '/ping/',
+      component: Ping
+    },
+    {
+      path: '/profile/:profileId/',
+      component: Profile
+    }
+  ],
+  name: "irl.so",
+  theme: "auto"
 }
 
-export default App;
+export default () => (
+    <App {...f7params}>
+      <View main url="/">
+      </View>
+  </App>
+  );

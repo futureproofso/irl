@@ -1,0 +1,29 @@
+.Home {
+  text-align: center;
+}
+
+.Home a {
+  color: white;
+}
+
+.Home-logo {
+  height: 80vmin;
+  pointer-events: none;
+}
+
+@media only screen and (max-width: 1000px) {
+  .Home-logo {
+    height: 200vmin;
+  }
+}
+
+.Home-header {
+  background: black;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(20px + 2vmin);
+  color: white;
+}
