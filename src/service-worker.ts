@@ -15,6 +15,7 @@ import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 
 declare const self: ServiceWorkerGlobalScope;
+console.log("Running the service worker");
 
 clientsClaim();
 
