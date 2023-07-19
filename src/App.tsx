@@ -35,7 +35,7 @@ export default () => {
   );
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
   const [dbSetupComplete, setDbSetupComplete] = useState(false);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState("temp");
   const [loading, setLoading] = useState(true);
   const [installed, setInstalled] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
@@ -94,7 +94,6 @@ export default () => {
         }
         const address = await ku.publicKeyToAddress(publicKey);
         setUserId(address);
-        // f7.views.main.router.navigate(`/profile/${address}/`);
       }
     }
 
@@ -122,7 +121,7 @@ export default () => {
       {!canInstall && !installed && <InstallationBanner text={"install with Safari on iOS"} />}
       {!canInstall && !installed && <InstallationBanner text={"install with Chrome on Android"} />}
       {!installed && <Home />}
-      {installed && <Main />}
+      {installed && <Main userId={userId} />}
       </Page></View>
     </App>
   )

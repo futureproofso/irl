@@ -1,69 +1,112 @@
-import { Block, BlockTitle, ListItem, Fab, FabButtons, FabButton, Icon, Link, List, ListInput, Navbar, NavLeft, NavRight, NavTitle, NavTitleLarge, Page, f7 } from 'framework7-react';
-import { useEffect, useRef, useState } from 'react';
-const { Person, Plus } = require("framework7-icons/react");
+import { Block, BlockTitle, ListItem, Fab, FabButtons, FabButton, Icon, Link, List, Navbar, NavLeft, NavRight, NavTitle, NavTitleLarge, Page, f7 } from 'framework7-react';
+import { useEffect, useMemo, useState } from 'react';
+import ProfileButton from '../components/ProfileButton';
+import "./Main.css";
+const PubNub = require('pubnub');
+
+const CHANNEL = "tv_ribc";
 
 const Main = (props: any) => {
-    const [showInfo, setShowInfo] = useState(false);
+    const pubnub = useMemo(
+        () => new PubNub({
+        publishKey: process.env.PUBNUB_PUBLISH_KEY,
+        subscribeKey: process.env.PUBNUB_SUBCRIBE_KEY,
+        userId: props.userId,
+        ssl: process.env.NODE_ENV == "production"
+    }), [props.userId])
 
-    function openInfo() {
-        setShowInfo(true);
+    const [messages, setMessages] = useState("[]");
+    const [text, onChangeText] = useState("");
+
+    useEffect(fetchHistoricalMessages, [pubnub])
+    useEffect(listenToPubsub, [pubnub]);
+    useEffect(subscribeToChannel, [pubnub]);
+
+    function fetchHistoricalMessages() {
+        async function getOlderMessages() {
+            const result = await pubnub.fetchMessages({
+                channels: [CHANNEL],
+                count: 50,
+                includeMessageType: true,
+                includeUUID: true,
+                includeMeta: true,
+                includeMessageActions: false,
+            })
+            if (result.channels[CHANNEL]) {
+                const oldMessages = (result.channels[CHANNEL] as Array<any>).reverse();
+                setMessages(JSON.stringify(oldMessages));
+            }
+        }
+        getOlderMessages();
     }
 
-    function closeInfo() {
-        setShowInfo(false);
+    function listenToPubsub() {
+        const listener = createListener();
+        pubnub.addListener(listener);
+        return () => pubnub.removeListener(listener);
     }
 
-    const allowInfinite = useRef(true);
-  const [items, setItems] = useState([
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-  ]);
-  const [showPreloader, setShowPreloader] = useState(true);
+    function subscribeToChannel() {
+        pubnub.subscribe({ channels: [CHANNEL] });
+        return () => pubnub.unsubscribe({ channels: [CHANNEL] });
+    }
 
-  const loadMore = () => {
-    if (!allowInfinite.current) return;
-    allowInfinite.current = false;
+    function createListener() {
+        return {
+            status: (e: any) => {
+                if (e.category === "PNConnectedCategory") {
+                    console.log("Connected to pubsub channel", CHANNEL);
+                }
+            },
+            message: (e: any) => {
+                setMessages(messages => {
+                    return JSON.stringify([e, ...JSON.parse(messages)])
+                });
+            },
+            presence: (presenceEvent: any) => {
+                // handle presence
+            }
+        };
+    }
 
-    setTimeout(() => {
-      if (items.length >= 200) {
-        setShowPreloader(false);
-        return;
-      }
-
-      const itemsLength = items.length;
-
-      for (let i = 1; i <= 20; i += 1) {
-        items.push(itemsLength + i);
-      }
-      allowInfinite.current = true;
-      setItems([...items]);
-    }, 1000);
-  };
+    async function publishMessage(e: any) {
+        e.preventDefault();
+        if (!text) return;
+        const payload = {
+            channel: CHANNEL,
+            message: {
+                title: "post",
+                description: text
+            }
+        };
+        await pubnub.publish(payload);
+        onChangeText("");
+    }
 
     return (
-<Page infinite infiniteDistance={50} infinitePreloader={showPreloader} onInfinite={loadMore}>
-            <Navbar large transparent>
-  <NavLeft>
-    irl.so
-  </NavLeft>
-<List strongIos dividersIos insetIos>
-            <ListInput outline type="text" placeholder="add a fren" clearButton>
-      </ListInput>
-      </List>
-  <NavRight>
-    <Person />
-  </NavRight>
-</Navbar>
-<Block>
+        <Page infinite infiniteDistance={50} infinitePreloader={false} onInfinite={() => { }}>
+            <Navbar large>
+                <NavLeft className="irl-header">
+                    irl.so
+                </NavLeft>
+                <NavRight className="irl-header">
+                    <ProfileButton />
+                </NavRight>
+            </Navbar>
+            <Block>
 
 
-</Block>
-      <BlockTitle>Scroll bottom</BlockTitle>
-      <List strongIos outlineIos dividersIos>
-        {items.map((item, index) => (
-          <ListItem title={`Item ${item}`} key={index}></ListItem>
-        ))}
-      </List>
-    </Page>
+                <BlockTitle>Scroll bottom</BlockTitle>
+
+                <input value={text} onChange={(e) => onChangeText(e.target.value)}></input>
+                <button onClick={publishMessage}>send</button>
+                <List dividersIos simpleList>
+                    {JSON.parse(messages).map((message: any, index: any) => (
+                        <ListItem key={`${message.timetoken}:${message.publisher}`}>{message.message.description}</ListItem>
+                    ))}
+                </List>
+            </Block>
+        </Page>
     )
 }
 

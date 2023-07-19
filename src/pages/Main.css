@@ -1,0 +1,20 @@
+.irl-header {
+display:inline-flex;
+height: 33px;
+margin: 53px 36px 0px 36px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 800;
+font-size: 22px;
+line-height: 33px;
+/* identical to box height */
+letter-spacing: 0.255em;
+text-transform: uppercase;
+
+background: linear-gradient(0deg, #FFFFFF, #FFFFFF);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+/* text-fill-color: transparent; */
+}

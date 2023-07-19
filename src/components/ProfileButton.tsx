@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Fab, FabButtons, Icon } from "framework7-react";
 import Profile from "../pages/Profile";
+const { Person } = require("framework7-icons/react");
 
 const ProfileButton = () => {
     const [showProfile, setShowProfile] = useState(false);
@@ -15,9 +16,9 @@ const ProfileButton = () => {
 
     return (
         <div>
-            <Fab position="right-top" slot="fixed" onClick={openProfile}>
-                <Icon ios="f7:plus" md="material:add" />
-            </Fab>
+            <span onClick={openProfile}>
+                <Person />
+            </span>
             <Profile opened={showProfile} close={closeProfile} />
         </div>
     )
