@@ -2,6 +2,7 @@ import { App, View, Page, Navbar, Toolbar, Link, f7 } from 'framework7-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import Home from "./pages/Home";
+import Main from "./pages/Main";
 import Ping from "./pages/Ping";
 import Profile from './pages/Profile';
 import NavBottom from './components/NavBottom';
@@ -17,10 +18,6 @@ const f7params: Framework7Parameters = {
     {
       path: '/',
       component: Home,
-    },
-    {
-      path: '/ping/',
-      component: Ping
     },
     {
       path: '/profile/:profileId/',
@@ -45,6 +42,7 @@ export default () => {
 
   useEffect(listenForBeforeInstallPrompt, []);
   useEffect(listenForDOMContentLoaded, []);
+  useEffect(detectInstallation, []);
 
   function listenForBeforeInstallPrompt() {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -67,14 +65,16 @@ export default () => {
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setInstalled(true);
     }
+    // METRICS: display mode
+  }
+
+  function detectInstallation() {
     if (("standalone" in window.navigator) && window.navigator.standalone) {
       setInstalled(true);
     }
-    if (window.location.search == "?d=a") {
-      console.log(window.location.search)
+    if (window.location.search === "?d=a") {
       setInstalled(true);
     }
-    // METRICS: display mode
   }
 
   useEffect(() => {
@@ -116,15 +116,14 @@ export default () => {
 
   return (
     <App {...f7params}>
+      <View>
+      <Page>
       {canInstall && !installed && <BannerScrolling text={"install meeeeee"} onClick={promptInstall} />}
       {!canInstall && !installed && <InstallationBanner text={"install with Safari on iOS"} />}
       {!canInstall && !installed && <InstallationBanner text={"install with Chrome on Android"} />}
-      {installed && <ProfileButton />}
-      <View
-      url="/"
-      iosDynamicNavbar={false}
-      browserHistory={true}>
-      </View>
+      {!installed && <Home />}
+      {installed && <Main />}
+      </Page></View>
     </App>
   )
 }

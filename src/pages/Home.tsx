@@ -1,13 +1,26 @@
 import { Page } from 'framework7-react';
 import splash from '../irlso.gif';
 import '../styles/Home.css';
+import { useState } from 'react';
+import Info from './Info';
 
 const Home = (props: any) => {
+    const [showInfo, setShowInfo] = useState(false);
+
+    function openInfo() {
+        setShowInfo(true);
+    }
+
+    function closeInfo() {
+        setShowInfo(false);
+    }
+
     return (
-        <Page name="home">
+        <div>
+            <Info opened={showInfo} close={closeInfo} />
             <div className="Home-content">
                 <img src={splash} className="Home-logo" alt="logo" />
-                <div className="grid grid-cols-4 grid-gap">
+                <div className="grid grid-cols-5 grid-gap">
                     <a className="link external" href="https://tiktok.com/@futureproofso" target='_blank'>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-tiktok" viewBox="0 0 16 16">
                             <path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3V0Z" />
@@ -28,9 +41,14 @@ const Home = (props: any) => {
                             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
                         </svg>
                     </a>
+                    <a href="#" onClick={openInfo}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+</svg>
+                    </a>
                 </div>
-            </div>
-        </Page>
+            </div></div>
     )
 }
 
