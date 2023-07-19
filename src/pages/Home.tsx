@@ -1,12 +1,8 @@
-import { Fab, Page } from 'framework7-react';
+import { Page } from 'framework7-react';
 import splash from '../irlso.gif';
 import '../styles/Home.css';
-import { useEffect, useState } from 'react';
-
 
 const Home = (props: any) => {
-    
-
     return (
         <Page name="home">
             <div className="Home-content">

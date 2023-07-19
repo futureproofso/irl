@@ -6,8 +6,9 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import Framework7 from 'framework7/lite';
 import Framework7React from 'framework7-react';
+import Popup from 'framework7/components/popup';
 
-Framework7.use(Framework7React)
+Framework7.use([Framework7React, Popup]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

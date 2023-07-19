@@ -10,6 +10,7 @@ import * as ku from "./keyUtils";
 import { Framework7Parameters } from 'framework7/types';
 import InstallationBanner from './components/BannerScrolling';
 import BannerScrolling from './components/BannerScrolling';
+import ProfileButton from './components/ProfileButton';
 
 const f7params: Framework7Parameters = {
   routes: [
@@ -66,6 +67,13 @@ export default () => {
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setInstalled(true);
     }
+    if (("standalone" in window.navigator) && window.navigator.standalone) {
+      setInstalled(true);
+    }
+    if (window.location.search == "?d=a") {
+      console.log(window.location.search)
+      setInstalled(true);
+    }
     // METRICS: display mode
   }
 
@@ -109,8 +117,9 @@ export default () => {
   return (
     <App {...f7params}>
       {canInstall && !installed && <BannerScrolling text={"install meeeeee"} onClick={promptInstall} />}
-      {!canInstall && <InstallationBanner text={"install with Safari on iOS"} />}
-      {!canInstall && <InstallationBanner text={"install with Chrome on Android"} />}
+      {!canInstall && !installed && <InstallationBanner text={"install with Safari on iOS"} />}
+      {!canInstall && !installed && <InstallationBanner text={"install with Chrome on Android"} />}
+      {installed && <ProfileButton />}
       <View
       url="/"
       iosDynamicNavbar={false}

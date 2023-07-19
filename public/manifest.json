@@ -2,8 +2,8 @@
   "name": "irl.so",
   "short_name": "irl",
   "description": "connect in real life. stay connected online.",
-  "start_url": ".",
-  "id": "/",
+  "start_url": "/?d=a",
+  "id": "/?d=a",
   "display": "standalone",
   "display_override": [
     "standalone"
