@@ -1,0 +1,58 @@
+.scroll-banner {
+  display: flex;
+  width: 100%;
+  padding-block: 20px;
+
+  /* animation properties */
+  -moz-transform: translateX(0%);
+  -webkit-transform: translateX(0%);
+  transform: translateX(0%);
+
+  -moz-animation: bannerAnimation 25s linear infinite;
+  -webkit-animation: bannerAnimation 25s linear infinite;
+  animation: bannerAnimation 25s linear infinite;
+}
+
+.scroll-banner span {
+  width: 100%;
+  float: left;
+  text-wrap: nowrap;
+  white-space: nowrap;
+  margin-inline: 20px;
+}
+
+/* for Firefox */
+@-moz-keyframes bannerAnimation {
+  from {
+    -moz-transform: translateX(0%);
+  }
+
+  to {
+    -moz-transform: translateX(-100%);
+  }
+}
+
+/* for Chrome */
+@-webkit-keyframes bannerAnimation {
+  from {
+    -webkit-transform: translateX(0%);
+  }
+
+  to {
+    -webkit-transform: translateX(-100%);
+  }
+}
+
+@keyframes bannerAnimation {
+  from {
+    -moz-transform: translateX(0%);
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
+  }
+
+  to {
+    -moz-transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+}

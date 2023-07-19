@@ -12,23 +12,22 @@ const Ping = ({ f7route }: any) => {
 
     useEffect(() => {
         if (window.Worker) {
-          worker.postMessage("ping");
+            worker.postMessage("ping");
         }
-      }, [worker]);
-    
-      useEffect(() => {
+    }, [worker]);
+
+    useEffect(() => {
         if (window.Worker) {
-          worker.onmessage = (e: MessageEvent<string>) => {
-            setMessage(e.data);
-          }
+            worker.onmessage = (e: MessageEvent<string>) => {
+                setMessage(e.data);
+            }
         }
-      }, [worker]);
+    }, [worker]);
 
     return (
-            <Page name="ping">
-        <NavTop f7route={f7route} />
-              <div>{message}</div>
-            </Page>
+        <Page name="ping">
+            <div>{message}</div>
+        </Page>
     )
 }
 

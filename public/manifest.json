@@ -1,6 +1,16 @@
 {
-  "short_name": "irl",
   "name": "irl.so",
+  "short_name": "irl",
+  "description": "connect in real life. stay connected online.",
+  "start_url": ".",
+  "id": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#000000",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "irlsofavicon.ico",
@@ -10,7 +20,8 @@
     {
       "src": "irlso192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
       "src": "irlso512.png",
@@ -18,10 +29,25 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
-  "id": "/",
-  "display": "standalone",
-  "theme_color": "#ffffff",
-  "background_color": "#000000",
-  "orientation": "portrait"
+  "screenshots": [
+    {
+      "src": "screenshot.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpg",
+      "platform": "wide"
+    }
+  ],
+  "categories": [
+    "social"
+  ],
+  "lang": "en",
+  "dir": "ltr",
+  "handle_links": "not-preferred",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "prefer_related_applications": false,
+  "side_panel": {
+    "preferred_width": 600
+  }
 }
