@@ -49,7 +49,7 @@ const Main = (props: Props) => {
   const [userHandle, setUserHandle] = useState("anon");
 
   useEffect(fetchHistoricalDaps, [pubnub]);
-  // useEffect(fetchHistoricalProfiles, [pubnub]);
+  useEffect(fetchHistoricalProfiles, [pubnub, props.privateDbReady]);
   useEffect(listenToPubsub, [pubnub]);
   useEffect(subscribeToChannel, [pubnub]);
 
@@ -76,7 +76,8 @@ const Main = (props: Props) => {
   }
 
   function fetchHistoricalProfiles() {
-    async function getOlderProfiles() {
+    async function getLatestProfileUpdates() {
+      const lastTimestamp = await props.privateDb.getProfilesFetchTimestamp();
       const result = await pubnub.fetchMessages({
         channels: [CHANNEL_PROFILES],
         count: 100,
@@ -84,12 +85,40 @@ const Main = (props: Props) => {
         includeUUID: true,
         includeMeta: true,
         includeMessageActions: false,
+        end: lastTimestamp,
       });
       if (result.channels[CHANNEL_PROFILES]) {
-        // pass
+        const length = result.channels[CHANNEL_PROFILES].length;
+        if (length > 0) {
+          const updates = (
+            result.channels[CHANNEL_PROFILES] as Array<any>
+          ).reverse();
+          console.log("updates", updates);
+          const nextTimestamp = updates[0]["timetoken"];
+          if (nextTimestamp) {
+            const dedupe: any = {};
+            console.log("nextts", nextTimestamp);
+            await props.privateDb.saveProfilesFetchTimestamp(nextTimestamp);
+            await Promise.all(
+              updates.map(async (profileUpdate) => {
+                if (dedupe[profileUpdate.publisher]) {
+                  return;
+                }
+                dedupe[profileUpdate.publisher] = profileUpdate;
+                console.log(profileUpdate);
+                await props.privateDb.saveRemoteProfile(
+                  profileUpdate.uuid,
+                  profileUpdate.message,
+                );
+              }),
+            );
+          }
+        }
       }
     }
-    getOlderProfiles();
+    if (props.privateDbReady) {
+      getLatestProfileUpdates();
+    }
   }
 
   function listenToPubsub() {

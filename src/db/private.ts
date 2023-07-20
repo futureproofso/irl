@@ -13,6 +13,7 @@ export interface PrivateDatabase {
   setup(): Promise<void>;
   getPublicKey(): Promise<JsonWebKey>;
   getProfile(): Promise<string | undefined>;
+  getProfilesFetchTimestamp(): Promise<string | undefined>;
   getRemoteAddress(handle: string): Promise<string | undefined>;
   getRemoteProfile(userAddress: string): Promise<string | undefined>;
   saveKeypair(keypair: {
@@ -20,6 +21,7 @@ export interface PrivateDatabase {
     privateKey: JsonWebKey;
   }): Promise<void>;
   saveProfile(profileData: string): Promise<void>;
+  saveProfilesFetchTimestamp(timestamp: string): Promise<void>;
   saveRemoteHandle(userAddress: string, handle: string): Promise<void>;
   saveRemoteProfile(userAddress: string, profileData: string): Promise<void>;
 }
@@ -63,6 +65,14 @@ export class idbDatabase implements PrivateDatabase {
     }
   }
 
+  async getProfilesFetchTimestamp(): Promise<string | undefined> {
+    if (this._db) {
+      return await this._db.get(DB_SETTINGS_STORE_NAME, "profilesFetchTimestamp");
+    } else {
+      throw Error("Database is not set up");
+    }
+  }
+
   async saveKeypair(keypair: {
     publicKey: JsonWebKey;
     privateKey: JsonWebKey;
@@ -75,6 +85,14 @@ export class idbDatabase implements PrivateDatabase {
   async saveProfile(profileData: string): Promise<void> {
     if (this._db) {
       await this._db.put(DB_SETTINGS_STORE_NAME, profileData, "profile");
+    } else {
+      throw Error("Database is not set up");
+    }
+  }
+
+  async saveProfilesFetchTimestamp(timestamp: string): Promise<void> {
+    if (this._db) {
+      await this._db.put(DB_SETTINGS_STORE_NAME, timestamp, "profilesFetchTimestamp");
     } else {
       throw Error("Database is not set up");
     }
