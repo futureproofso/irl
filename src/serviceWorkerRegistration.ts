@@ -27,6 +27,16 @@ type Config = {
 
 export function register(config?: Config) {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
+    try {
+    caches.keys().then(function(cacheNames) {
+      cacheNames.forEach(function(cacheName) {
+        caches.delete(cacheName);
+        console.log("Deleted cache", cacheName);
+      });
+    });
+    } catch(err) {
+      console.error(err);
+    }
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
@@ -62,6 +72,16 @@ export function register(config?: Config) {
 
 export function registerLocal(config?: Config) {
   if (process.env.NODE_ENV !== "production" && "serviceWorker" in navigator) {
+    try {
+    caches.keys().then(function(cacheNames) {
+      cacheNames.forEach(function(cacheName) {
+        caches.delete(cacheName);
+        console.log("Deleted cache", cacheName);
+      });
+    });
+    } catch(err) {
+      console.error(err);
+    }
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
