@@ -1,0 +1,12 @@
+# Ignore everything
+*
+
+# Except Typescript files
+# !*.ts
+!src
+!src/**
+!src/**/*.ts
+!src/**/*.tsx
+
+*.html
+*.css

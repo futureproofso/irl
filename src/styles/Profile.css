@@ -7,42 +7,97 @@ img {
     height: 100%;
 }
 
+.irl-profile-container {
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  text-align: center;
+}
+
+.irl-profile-container form {
+    width: 80%;
+}
+
+.irl-profile-container input {
+    text-align: center;
+}
+
+.irl-profile-name {
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 27px;
+line-height: 40px;
+
+color: #FFFFFF;
+}
+
+.irl-profile-handle {
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+color: #E5E5E9;
+
+opacity: 0.52;
+}
+
+.irl-profile-link {
+    margin-top: 10px;
+
+background: #222534;
+border-radius: 12.84px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 15px;
+line-height: 22px;
+/* identical to box height */
+letter-spacing: 0.07em;
+text-transform: uppercase;
+
+color: #CBCBCB;
+}
+
+.irl-profile-save {
+background: #0777E8;
+border-radius: 14px;
+
+/* Save changes */
+height: 40px;
+padding-top: 20px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+/* identical to box height */
+letter-spacing: 0.03em;
+text-transform: uppercase;
+
+color: #FFFFFF;
+}
+
 .custom-file-upload {
     border-radius: 50%;
     display: inline-block;
     position: relative;
     padding: 6px;
     cursor: pointer;
-    background: linear-gradient(270deg, #3fa1a9, #79f1a4);
-    margin-bottom: 25px;
+    border-color: white;
 }
 
-.img-wrap {
+.irl-profile-img-wrap {
     position: relative;
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     overflow: hidden;
     border-radius: 50%;
-}
-
-.img-upload:before {
-    content: "\f093";
-    font-size: 90px;
-    position: absolute;
-    padding-top: 80px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: #63d3a6;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    opacity: 0;
-    transition: .5s ease;
-    background-color: #fff;
-}
-
-.img-upload:hover:before {
-    opacity: 1;
 }

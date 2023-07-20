@@ -1,5 +1,4 @@
 import { Block, BlockTitle, Page, Popup, Navbar, NavRight, NavTitle, Link } from "framework7-react"
-import { ProfileImageUpload } from "../components/ProfileImageUpload"
 import { useState } from "react"
 import safari1 from "../images/safari1.png";
 import safari2 from "../images/safari2.png";
