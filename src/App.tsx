@@ -164,6 +164,7 @@ export default () => {
             <Main
               userAddress={userAddress}
               publicDb={publicDb}
+              publicDbReady={publicDbReady}
               privateDb={privateDb}
               privateDbReady={privateDbReady}
             />

@@ -1,28 +1,93 @@
 import { useEffect, useState } from "react";
-import "./SearchInput.css";
+import { PrivateDatabase } from "../db/private";
+import { PublicDatabase } from "../db/public";
+import ProfileFrozen from "../pages/ProfileFrozen";
+import "./SearchInput.scss";
+import Spinner from "./Spinner";
 
 const { Search } = require("framework7-icons/react");
 
-const SearchInput = () => {
-  const [text, setText] = useState("");
+interface Props {
+  space: string;
+  publicDb: PublicDatabase;
+  privateDb: PrivateDatabase;
+  publicDbReady: boolean;
+}
+
+const SearchInput = (props: Props) => {
+  const [loading, setLoading] = useState(false);
+  const [handle, setHandle] = useState("");
+  const [profile, setProfile] = useState("");
+  const [notFound, setNotFound] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   function handleChange(e: any) {
     e.preventDefault();
-    setText(e.target.value);
+    setHandle(e.target.value);
+    if (notFound) setNotFound(false);
   }
 
-  function handleClick(e: any) {
+  async function handleClick(e: any) {
     e.preventDefault();
+    if (loading) return;
+    setLoading(true);
+    const userAddress = await props.publicDb.getUserAddress({
+      space: props.space,
+      handle,
+    });
+    if (userAddress) {
+      const userProfile = await props.publicDb.getProfile({
+        space: props.space,
+        userAddress,
+      });
+      if (userProfile) {
+        setProfile(userProfile);
+        setShowProfile(true);
+      } else {
+        setNotFound(true);
+      }
+    } else {
+      setNotFound(true);
+    }
+    setLoading(false);
+  }
+
+  function closeProfile() {
+    setShowProfile(false);
   }
 
   return (
-    <div id="irl-search-container">
-      <div id="irl-search-input">
-        <input value={text} onChange={handleChange} />
-      </div>
-      <span onClick={handleClick}>
-        <Search />
-      </span>
+    <div>
+      {profile && (
+        <ProfileFrozen
+          space={props.space}
+          handle={handle}
+          opened={showProfile}
+          close={closeProfile}
+          profileData={profile}
+          publicDb={props.publicDb}
+          publicDbReady={props.publicDbReady}
+        />
+      )}
+      <fieldset className="field-container">
+        <input
+          type="text"
+          placeholder="add a fren"
+          className="field"
+          onChange={handleChange}
+        />
+        <div className="icons-container">
+          {/* <div className="icon-search"></div>
+    <div className="icon-close">
+      <div className="x-up"></div>
+      <div className="x-down"></div>
+    </div> */}
+        </div>
+        <div className="irl-search-link" onClick={handleClick}>
+          {loading && <Spinner show={true} />}
+          {!loading && "Link"}
+        </div>
+      </fieldset>
     </div>
   );
 };

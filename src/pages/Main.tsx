@@ -23,6 +23,7 @@ interface Props {
   privateDb: PrivateDatabase;
   privateDbReady: boolean;
   publicDb: PublicDatabase;
+  publicDbReady: boolean;
   userAddress: string;
 }
 
@@ -122,35 +123,36 @@ const Main = (props: Props) => {
     >
       <Navbar large>
         <NavLeft className="irl-header">irl.so</NavLeft>
-        <NavRight className="irl-header">
+        <NavRight className="irl-header-icons">
           <ProfileButton
-            appName={CHANNEL}
+            space={CHANNEL}
             userAddress={props.userAddress}
             privateDb={props.privateDb}
             publicDb={props.publicDb}
             privateDbReady={props.privateDbReady}
           />
-          <span className="arrow-down-close" onClick={toggleSearchInput}>
+          <div onClick={toggleSearchInput}>
             <Plus />
-          </span>
+          </div>
         </NavRight>
       </Navbar>
       {showSearchInput && (
         <Block>
-          <SearchInput />
+          <SearchInput space={CHANNEL} publicDb={props.publicDb} privateDb={props.privateDb} publicDbReady={props.publicDbReady} />
         </Block>
       )}
       <Block>
         {/* <input value={text} onChange={(e) => onChangeText(e.target.value)}></input>
                 <button onClick={publishMessage}>send</button> */}
 
-        <List dividersIos simpleList>
+        {!showSearchInput && <List dividersIos simpleList>
           {JSON.parse(messages).map((message: any, index: any) => (
             <ListItem key={`${message.timetoken}:${message.publisher}`}>
               {message.message.description}
             </ListItem>
           ))}
         </List>
+}
       </Block>
     </Page>
   );

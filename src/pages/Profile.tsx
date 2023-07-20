@@ -16,7 +16,7 @@ import placeholderImage from "../images/avatar_placeholder.png";
 import "../styles/Profile.css";
 
 interface Props {
-  appName: string;
+  space: string;
   opened: boolean;
   close: any;
   privateDb: PrivateDatabase;
@@ -97,14 +97,14 @@ const Profile = (props: Props) => {
     await (props.privateDb as PrivateDatabase).saveProfile(
       JSON.stringify(profileData),
     );
-    await (props.publicDb as PublicDatabase).publishHandle({
-      space: props.appName,
-      publicKey: props.userAddress,
+    await props.publicDb.publishHandle({
+      space: props.space,
+      userAddress: props.userAddress,
       handle,
     });
-    await (props.publicDb as PublicDatabase).publishProfile({
-      space: props.appName,
-      publicKey: props.userAddress,
+    await props.publicDb.publishProfile({
+      space: props.space,
+      userAddress: props.userAddress,
       profileData: JSON.stringify(profileData),
     });
     setIsEditing(false);

@@ -33,7 +33,9 @@ color: #FFFFFF;
 }
 
 .irl-profile-name-input {
+    width: 100%;
     display: inline-flex;
+    justify-content: center;
     margin: 6px;
 font-family: 'Poppins';
 font-style: normal;

@@ -7,7 +7,7 @@ import Profile from "../pages/Profile";
 const { Person } = require("framework7-icons/react");
 
 interface Props {
-  appName: string;
+  space: string;
   userAddress: string;
   privateDb: PrivateDatabase;
   privateDbReady: boolean;
@@ -31,7 +31,7 @@ const ProfileButton = (props: Props) => {
         <Person />
       </span>
       <Profile
-        appName={props.appName}
+        space={props.space}
         userAddress={props.userAddress}
         opened={showProfile}
         close={closeProfile}
