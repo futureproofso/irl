@@ -1,22 +1,35 @@
-import { Block, BlockTitle, ListItem, Fab, FabButtons, FabButton, Icon, Link, List, Navbar, NavLeft, NavRight, NavTitle, NavTitleLarge, Page, f7 } from 'framework7-react';
+import {
+    Block,
+    BlockTitle,
+    ListItem,
+    Link,
+    List,
+    Navbar, NavLeft, NavRight, Page,
+    Searchbar,
+    Toolbar
+} from 'framework7-react';
 import { useEffect, useMemo, useState } from 'react';
 import ProfileButton from '../components/ProfileButton';
 import "./Main.css";
+import AddButton from '../components/AddButton';
+import SearchInput from '../components/SearchInput';
 const PubNub = require('pubnub');
+const { Plus } = require("framework7-icons/react")
 
 const CHANNEL = "tv_ribc";
 
 const Main = (props: any) => {
     const pubnub = useMemo(
         () => new PubNub({
-        publishKey: process.env.PUBNUB_PUBLISH_KEY,
-        subscribeKey: process.env.PUBNUB_SUBCRIBE_KEY,
-        userId: props.userId,
-        ssl: process.env.NODE_ENV == "production"
-    }), [props.userId])
+            publishKey: process.env.REACT_APP_PUBNUB_PUBLISH_KEY,
+            subscribeKey: process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY,
+            userId: props.userId,
+            ssl: process.env.NODE_ENV == "production"
+        }), [props.userId])
 
     const [messages, setMessages] = useState("[]");
     const [text, onChangeText] = useState("");
+    const [showSearchInput, setShowSearchInput] = useState(false);
 
     useEffect(fetchHistoricalMessages, [pubnub])
     useEffect(listenToPubsub, [pubnub]);
@@ -83,23 +96,33 @@ const Main = (props: any) => {
         onChangeText("");
     }
 
+    function toggleSearchInput(e: any) {
+        e.preventDefault();
+        setShowSearchInput(!showSearchInput);
+    }
+
     return (
-        <Page infinite infiniteDistance={50} infinitePreloader={false} onInfinite={() => { }}>
+        <Page infinite infiniteDistance={50} infinitePreloader={false} onInfinite={() => { }} hideToolbarOnScroll={true}>
             <Navbar large>
                 <NavLeft className="irl-header">
                     irl.so
+
                 </NavLeft>
                 <NavRight className="irl-header">
                     <ProfileButton />
+                    <span className="arrow-down-close" onClick={toggleSearchInput}>
+                        <Plus />
+                        </span>
                 </NavRight>
+
             </Navbar>
+            {showSearchInput && <Block>
+                <SearchInput />
+        </Block>}
             <Block>
+                {/* <input value={text} onChange={(e) => onChangeText(e.target.value)}></input>
+                <button onClick={publishMessage}>send</button> */}
 
-
-                <BlockTitle>Scroll bottom</BlockTitle>
-
-                <input value={text} onChange={(e) => onChangeText(e.target.value)}></input>
-                <button onClick={publishMessage}>send</button>
                 <List dividersIos simpleList>
                     {JSON.parse(messages).map((message: any, index: any) => (
                         <ListItem key={`${message.timetoken}:${message.publisher}`}>{message.message.description}</ListItem>

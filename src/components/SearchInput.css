@@ -1,0 +1,86 @@
+#irl-search-container {
+    display: flex;
+    justify-content: flex-end;
+
+    /* animation properties */
+  -moz-transform: translateY(-5%);
+  -webkit-transform: translateY(-5%);
+  transform: translateY(-5%);
+
+  -moz-animation: containerAnimation 0.5s linear;
+  -webkit-animation: containerAnimation 0.51s linear;
+  animation: containerAnimation 0.51s linear;
+}
+
+/* for Firefox */
+@-moz-keyframes containerAnimation {
+  from {
+    -moz-transform: translateY(-5%);
+  }
+
+  to {
+    -moz-transform: translateY(0%);
+  }
+}
+
+/* for Chrome */
+@-webkit-keyframes containerAnimation {
+  from {
+    -webkit-transform: translateY(-5%);
+  }
+
+  to {
+    -webkit-transform: translateY(0%);
+  }
+}
+
+@keyframes containerAnimation {
+  from {
+    -moz-transform: translateY(-5%);
+    -webkit-transform: translateY(-5%);
+    transform: translateY(-5%);
+  }
+
+  to {
+    -moz-transform: translateY(0%);
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+  }
+}
+
+#irl-search-input input {
+    height: 44px;
+    width: 80vw;
+/* search */
+margin-left: 31px;
+margin-right: 24px;
+padding: 10px;
+
+/* Rectangle 1478 */
+
+box-sizing: border-box;
+
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+/* grey */
+border: 1px solid #F2F2F2;
+border-radius: 10px;
+
+/* Y/text */
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 20px;
+/* or 143% */
+display: inline-flex;
+align-items: center;
+
+color: #B7B7B7;
+background-color: transparent;
+}
+

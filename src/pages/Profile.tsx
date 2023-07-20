@@ -32,46 +32,37 @@ const Profile = (props: any) => {
 
     return (
         <Popup
-        opened={props.opened}
-        onPopupClosed={props.close}
-        backdrop
-        closeByBackdropClick
-        push
-      >
-        <Page name="profile">
-<Navbar>
-          <NavRight>
-            <Link onClick={props.close}>X</Link>
-          </NavRight>
-        </Navbar>
-          <BlockTitle large>Profile!</BlockTitle>
-            <Block strongIos outlineIos>
-      <p>
-        Cards are a great way to contain and organize your information, especially when combined
-        with List Views. Cards can contain unique related data, like for example photos, text or
-        links about a particular subject. Cards are typically an entry point to more complex and
-        detailed information.
-      </p>
-    </Block>
-    <Block>
+            opened={props.opened}
+            onPopupClosed={props.close}
+            backdrop
+            closeByBackdropClick
+            push
+        >
+            <Page name="profile">
+                <Navbar>
+                    <NavRight>
+                        <Link onClick={props.close}>X</Link>
+                    </NavRight>
+                </Navbar>
+                <Block>
 
-            <div>{props.profileId}</div>
-            <div>
-                {(isEditing) ? (
-                    <EditableProfile onSubmit={toggleEditing}>
-                        <ProfileImageUpload onChange={uploadImage} src={imageUrl} />
-                        <NameField onChange={editName} value={name} />
-                    </EditableProfile>
-                ) : (
-                    <ProfileCard
-                        onSubmit={toggleEditing}
-                        src={imageUrl}
-                        name={name}
-                    />)}
+                    <div>{props.profileId}</div>
+                    <div>
+                        {(isEditing) ? (
+                            <EditableProfile onSubmit={toggleEditing}>
+                                <ProfileImageUpload onChange={uploadImage} src={imageUrl} />
+                                <NameField onChange={editName} value={name} />
+                            </EditableProfile>
+                        ) : (
+                            <ProfileCard
+                                onSubmit={toggleEditing}
+                                src={imageUrl}
+                                name={name}
+                            />)}
 
-            </div>
-    </Block>
-        </Page>
+                    </div>
+                </Block>
+            </Page>
         </Popup>
     )
 }
