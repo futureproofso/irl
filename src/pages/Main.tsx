@@ -19,8 +19,8 @@ const { Plus } = require("framework7-icons/react");
 
 const ADMIN = "fp";
 const SPACE = "tv_ribc";
-const CHANNEL_PROFILES = `${ADMIN}:${SPACE}:profiles`;
-const CHANNEL_DAPS = `${ADMIN}:${SPACE}:daps`;
+const CHANNEL_PROFILES = `${ADMIN}-${SPACE}-profiles`;
+const CHANNEL_DAPS = `${ADMIN}-${SPACE}-daps`;
 
 interface Props {
   privateDb: PrivateDatabase;
@@ -42,32 +42,54 @@ const Main = (props: Props) => {
     [props.userAddress],
   );
 
-  const [messages, setMessages] = useState("[]");
+  const [loading, setLoading] = useState(false);
+  const [daps, setDaps] = useState("[]");
   const [text, onChangeText] = useState("");
   const [showSearchInput, setShowSearchInput] = useState(false);
+  const [userHandle, setUserHandle] = useState("anon");
 
-  useEffect(fetchHistoricalMessages, [pubnub]);
+  useEffect(fetchHistoricalDaps, [pubnub]);
+  // useEffect(fetchHistoricalProfiles, [pubnub]);
   useEffect(listenToPubsub, [pubnub]);
   useEffect(subscribeToChannel, [pubnub]);
 
-  function fetchHistoricalMessages() {
-    async function getOlderMessages() {
+  function fetchHistoricalDaps() {
+    async function getOlderDaps() {
+      setLoading(true);
       const result = await pubnub.fetchMessages({
         channels: [CHANNEL_DAPS],
-        count: 50,
+        count: 100,
         includeMessageType: true,
         includeUUID: true,
         includeMeta: true,
         includeMessageActions: false,
       });
+      console.log(result);
       if (result.channels[CHANNEL_DAPS]) {
-        const oldMessages = (
-          result.channels[CHANNEL_DAPS] as Array<any>
-        ).reverse();
-        setMessages(JSON.stringify(oldMessages));
+        const oldDaps = (result.channels[CHANNEL_DAPS] as Array<any>).reverse();
+        console.log(oldDaps);
+        setDaps(JSON.stringify(oldDaps));
+      }
+      setLoading(false);
+    }
+    getOlderDaps();
+  }
+
+  function fetchHistoricalProfiles() {
+    async function getOlderProfiles() {
+      const result = await pubnub.fetchMessages({
+        channels: [CHANNEL_PROFILES],
+        count: 100,
+        includeMessageType: true,
+        includeUUID: true,
+        includeMeta: true,
+        includeMessageActions: false,
+      });
+      if (result.channels[CHANNEL_PROFILES]) {
+        // pass
       }
     }
-    getOlderMessages();
+    getOlderProfiles();
   }
 
   function listenToPubsub() {
@@ -90,13 +112,14 @@ const Main = (props: Props) => {
         }
       },
       message: (e: any) => {
-        if (e.publisher == props.userAddress) return;
         if (e.channel == CHANNEL_DAPS) {
-          setMessages((messages) => {
-            return JSON.stringify([e, ...JSON.parse(messages)]);
+          console.log(e);
+          setDaps((nextDaps) => {
+            return JSON.stringify([e, ...JSON.parse(nextDaps)]);
           });
         }
         if (e.channel == CHANNEL_PROFILES) {
+          if (e.publisher == props.userAddress) return;
           const handle = JSON.parse(e.message)["handle"];
           if (handle) {
             updateRemoteHandle({
@@ -125,10 +148,13 @@ const Main = (props: Props) => {
   }
 
   async function publishProfileUpdate(profileData: string) {
+    const nextUserHandle = JSON.parse(profileData)["handle"];
+    setUserHandle(nextUserHandle);
     await publishMessage({ channel: CHANNEL_PROFILES, message: profileData });
   }
 
   async function publishDap(dapData: string) {
+    console.log(dapData);
     await publishMessage({ channel: CHANNEL_DAPS, message: dapData });
   }
 
@@ -173,10 +199,13 @@ const Main = (props: Props) => {
       {showSearchInput && (
         <Block>
           <SearchInput
+            userAddress={props.userAddress}
+            userHandle={userHandle}
             space={SPACE}
             publicDb={props.publicDb}
             privateDb={props.privateDb}
             publicDbReady={props.publicDbReady}
+            publishDap={publishDap}
           />
         </Block>
       )}
@@ -186,9 +215,9 @@ const Main = (props: Props) => {
 
         {!showSearchInput && (
           <List dividersIos simpleList>
-            {JSON.parse(messages).map((message: any, index: any) => (
+            {JSON.parse(daps).map((message: any, index: any) => (
               <ListItem key={`${message.timetoken}:${message.publisher}`}>
-                {message.message.description}
+                {message.message}
               </ListItem>
             ))}
           </List>

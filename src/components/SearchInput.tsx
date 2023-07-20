@@ -8,23 +8,43 @@ import Spinner from "./Spinner";
 const { Search } = require("framework7-icons/react");
 
 interface Props {
+  userHandle: string;
+  userAddress: string;
   space: string;
   publicDb: PublicDatabase;
   privateDb: PrivateDatabase;
   publicDbReady: boolean;
+  publishDap: any;
 }
+
+const phrases = [
+  (a: string, b: string) => `congrats ${a} and ${b}! you have dapped!`,
+  (a: string, b: string) => `${a} and ${b} have dapeth`,
+  (a: string, b: string) => `${a} dapped up ${b}`,
+  (a: string, b: string) => `a wild dap appeared between ${a} and ${b}`,
+  (a: string, b: string) => `congrats on the dap ${a} and ${b}!`,
+  (a: string, b: string) => `${a} and ${b} have dapped, irl!`,
+  (a: string, b: string) => `${a} and ${b} dapped up. what's your excuse??`,
+  (a: string, b: string) => `new dap between ${a} and ${b}`,
+  (a: string, b: string) => `dap's what's up ${a} and ${b} (ha...)`,
+  (a: string, b: string) => `${a} dapped ${b}`,
+  (a: string, b: string) => `${a} and ${b} dapped up irl`,
+  (a: string, b: string) => `${a} and ${b} dapped up`,
+  (a: string, b: string) => `${a} gave ${b} a dap`,
+  (a: string, b: string) => `look at ${a} and ${b} dapping`,
+];
 
 const SearchInput = (props: Props) => {
   const [loading, setLoading] = useState(false);
-  const [handle, setHandle] = useState("");
-  const [profile, setProfile] = useState("");
+  const [remoteHandle, setRemoteHandle] = useState("");
+  const [remoteProfile, setRemoteProfile] = useState("");
   const [notFound, setNotFound] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
   function handleChange(e: any) {
     e.preventDefault();
     if (e.target.value && e.target.value !== "") {
-      setHandle((e.target.value as string).toLowerCase());
+      setRemoteHandle((e.target.value as string).toLowerCase());
     }
     if (notFound) setNotFound(false);
   }
@@ -33,12 +53,24 @@ const SearchInput = (props: Props) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
-    const userAddress = await props.privateDb.getRemoteAddress(handle);
-    if (userAddress) {
-      const userProfile = await props.privateDb.getRemoteProfile(userAddress);
-      if (userProfile) {
-        setProfile(userProfile);
+    const remoteAddress = await props.privateDb.getRemoteAddress(remoteHandle);
+    if (remoteAddress) {
+      const remoteProfile = await props.privateDb.getRemoteProfile(
+        remoteAddress,
+      );
+      if (remoteProfile) {
+        setRemoteProfile(remoteProfile);
         setShowProfile(true);
+        const randomPhrase =
+          phrases[Math.floor(Math.random() * phrases.length)];
+        const message = randomPhrase(props.userHandle, remoteHandle);
+        await props.publishDap(
+          JSON.stringify({
+            start: remoteAddress,
+            end: props.userAddress,
+            message,
+          }),
+        );
       } else {
         setNotFound(true);
       }
@@ -54,13 +86,13 @@ const SearchInput = (props: Props) => {
 
   return (
     <div>
-      {profile && (
+      {remoteProfile && (
         <ProfileFrozen
           space={props.space}
-          handle={handle}
+          handle={remoteHandle}
           opened={showProfile}
           close={closeProfile}
-          profileData={profile}
+          profileData={remoteProfile}
           publicDb={props.publicDb}
           publicDbReady={props.publicDbReady}
         />
@@ -68,7 +100,7 @@ const SearchInput = (props: Props) => {
       <fieldset className="field-container">
         <input
           type="text"
-          placeholder="add a fren"
+          placeholder="friend handle"
           className="field"
           onChange={handleChange}
         />
@@ -77,7 +109,7 @@ const SearchInput = (props: Props) => {
         {!notFound && (
           <div className="irl-search-link" onClick={handleClick}>
             {loading && <Spinner show={true} />}
-            {!loading && "Link"}
+            {!loading && "Dap"}
           </div>
         )}
       </fieldset>
