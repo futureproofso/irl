@@ -14,6 +14,7 @@ import BannerScrolling from './components/BannerScrolling';
 import ProfileButton from './components/ProfileButton';
 import "./styles/App.css";
 import InstallInstructions from './pages/InstallInstructions';
+import { publicDb } from './db/public';
 
 const f7params: Framework7Parameters = {
   routes: [
@@ -35,8 +36,13 @@ export default () => {
     () => new idbDatabase(),
     []
   );
+  const pubDb: any = useMemo(
+    () => new publicDb(),
+    []
+  );
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
   const [dbSetupComplete, setDbSetupComplete] = useState(false);
+  const [pubDbSetupCompolete, setPubDbSetupComplete] = useState(false);
   const [userId, setUserId] = useState("temp");
   const [loading, setLoading] = useState(true);
   const [installed, setInstalled] = useState(false);
@@ -46,6 +52,9 @@ export default () => {
   useEffect(listenForBeforeInstallPrompt, []);
   useEffect(listenForDOMContentLoaded, []);
   useEffect(detectInstallation, []);
+  useEffect(setupPrivateDb, [db]);
+  useEffect(setupUserCreds, [dbSetupComplete]);
+  useEffect(setupPublicDb, [pubDb]);
 
   function listenForBeforeInstallPrompt() {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -80,13 +89,19 @@ export default () => {
     }
   }
 
-  useEffect(() => {
+  function setupPrivateDb() {
     db.setup().then(() => {
       setDbSetupComplete(db.setupComplete);
-    })
-  }, [db]);
+    });
+  }
 
-  useEffect(() => {
+  function setupPublicDb() {
+    pubDb.setup().then(() => {
+      setPubDbSetupComplete(pubDb.setupComplete);
+    });
+  }
+
+  function setupUserCreds() {
     async function setupUser() {
       if (dbSetupComplete) {
         let publicKey = await db.getPublicKey();
@@ -99,11 +114,8 @@ export default () => {
         setUserId(address);
       }
     }
-
     setupUser();
-
-    return () => { }
-  }, [dbSetupComplete]);
+  }
 
   async function promptInstall() {
     console.log(installPromptEvent);

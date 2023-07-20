@@ -5,8 +5,7 @@ const DB_NAME = 'main';
 const DB_VERSION = 1;
 const DB_STORE_NAME = 'settings';
 
-
-export interface Database {
+export interface PrivateDatabase {
   _db: any;
   setupComplete: boolean;
   setup(): Promise<void>;
@@ -14,7 +13,7 @@ export interface Database {
   saveKeypair(keypair: { publicKey: JsonWebKey, privateKey: JsonWebKey }): Promise<void>;
 }
 
-export class idbDatabase implements Database {
+export class idbDatabase implements PrivateDatabase {
   _db: IDBPDatabase | undefined;
   setupComplete: boolean;
 

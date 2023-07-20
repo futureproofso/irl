@@ -15,6 +15,7 @@
     "framework7": "^8.2.0",
     "framework7-icons": "^5.0.5",
     "framework7-react": "^8.2.0",
+    "gun": "^0.2020.1239",
     "idb": "^7.1.1",
     "pubnub": "^7.2.3",
     "react": "^18.2.0",
