@@ -55,12 +55,12 @@ const SearchInput = (props: Props) => {
     setLoading(true);
     console.log("remotehandle from search", remoteHandle);
     const remoteAddress = await props.privateDb.getRemoteAddress(remoteHandle);
-    console.log("remoteADdress from search", remoteAddress)
+    console.log("remoteADdress from search", remoteAddress);
     if (remoteAddress) {
       const remoteProfile = await props.privateDb.getRemoteProfile(
         remoteAddress,
       );
-    console.log("remoteProfile from search", remoteProfile)
+      console.log("remoteProfile from search", remoteProfile);
       if (remoteProfile) {
         setRemoteProfile(remoteProfile);
         setShowProfile(true);

@@ -78,7 +78,7 @@ const Main = (props: Props) => {
   function fetchHistoricalProfiles() {
     async function getLatestProfileUpdates() {
       const lastTimestamp = await props.privateDb.getProfilesFetchTimestamp();
-      console.log("lastts", lastTimestamp)
+      console.log("lastts", lastTimestamp);
       const params: any = {
         channels: [CHANNEL_PROFILES],
         count: 100,
@@ -88,7 +88,7 @@ const Main = (props: Props) => {
         includeMessageActions: false,
       };
       if (lastTimestamp) {
-        params['end'] = lastTimestamp;
+        params["end"] = lastTimestamp;
       }
       const result = await pubnub.fetchMessages(params);
       if (result.channels[CHANNEL_PROFILES]) {
@@ -110,13 +110,18 @@ const Main = (props: Props) => {
                 }
                 dedupe[profileUpdate.uuid] = profileUpdate;
                 console.log(profileUpdate);
-                const remoteHandle = JSON.parse(profileUpdate.message)["handle"];
+                const remoteHandle = JSON.parse(profileUpdate.message)[
+                  "handle"
+                ];
                 if (remoteHandle) {
-                await props.privateDb.saveRemoteHandle(profileUpdate.uuid, remoteHandle);
-                await props.privateDb.saveRemoteProfile(
-                  profileUpdate.uuid,
-                  profileUpdate.message,
-                );
+                  await props.privateDb.saveRemoteHandle(
+                    profileUpdate.uuid,
+                    remoteHandle,
+                  );
+                  await props.privateDb.saveRemoteProfile(
+                    profileUpdate.uuid,
+                    profileUpdate.message,
+                  );
                 }
               }),
             );

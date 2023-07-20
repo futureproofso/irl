@@ -67,7 +67,10 @@ export class idbDatabase implements PrivateDatabase {
 
   async getProfilesFetchTimestamp(): Promise<string | undefined> {
     if (this._db) {
-      return await this._db.get(DB_SETTINGS_STORE_NAME, "profilesFetchTimestamp");
+      return await this._db.get(
+        DB_SETTINGS_STORE_NAME,
+        "profilesFetchTimestamp",
+      );
     } else {
       throw Error("Database is not set up");
     }
@@ -92,7 +95,11 @@ export class idbDatabase implements PrivateDatabase {
 
   async saveProfilesFetchTimestamp(timestamp: string): Promise<void> {
     if (this._db) {
-      await this._db.put(DB_SETTINGS_STORE_NAME, timestamp, "profilesFetchTimestamp");
+      await this._db.put(
+        DB_SETTINGS_STORE_NAME,
+        timestamp,
+        "profilesFetchTimestamp",
+      );
     } else {
       throw Error("Database is not set up");
     }

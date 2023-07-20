@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import {
   Block,
   Link,
@@ -15,6 +16,14 @@ import { PublicDatabase } from "../db/public";
 import placeholderImage from "../images/avatar_placeholder.png";
 import "../styles/Profile.css";
 
+const client = new S3Client({
+  region: "us-west-2",
+  credentials: {
+    accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY || "",
+    secretAccessKey: process.env.REACT_APP_S3_SECRET_KEY || "",
+  },
+});
+
 interface Props {
   space: string;
   opened: boolean;
@@ -30,6 +39,7 @@ const Profile = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState();
   const [imageUrl, setImageUrl] = useState(placeholderImage);
+  const [realUrl, setRealUrl] = useState("");
   const [name, setName] = useState("");
   const [handle, setHandle] = useState("");
   const [telegram, setTelegram] = useState("");
@@ -65,7 +75,7 @@ const Profile = (props: Props) => {
     }
   }
 
-  const uploadImage = (e: any) => {
+  const uploadImage = async (e: any) => {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
@@ -73,6 +83,23 @@ const Profile = (props: Props) => {
       setImageFile(file);
       setImageUrl(String(reader.result));
     };
+    const Key = `${props.space}/${props.userAddress}/${file.name
+      .split(".")
+      .pop()}`;
+    const command = new PutObjectCommand({
+      Bucket: "irlso-images",
+      Key,
+      Body: file,
+    });
+
+    try {
+      const response = await client.send(command);
+      setRealUrl(`https://irlso-images.s3.us-west-2.amazonaws.com/${Key}`);
+      console.log(response);
+    } catch (err) {
+      console.error(err);
+    }
+
     reader.readAsDataURL(file);
   };
 
@@ -87,7 +114,7 @@ const Profile = (props: Props) => {
     if (handle == "") return;
     setLoading(true);
     const profileData = {
-      imageUrl,
+      imageUrl: realUrl,
       name,
       handle: handle.toLowerCase(),
       telegram,
