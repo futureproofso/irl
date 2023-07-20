@@ -12,6 +12,8 @@ import { Framework7Parameters } from 'framework7/types';
 import InstallationBanner from './components/BannerScrolling';
 import BannerScrolling from './components/BannerScrolling';
 import ProfileButton from './components/ProfileButton';
+import "./styles/App.css";
+import InstallInstructions from './pages/InstallInstructions';
 
 const f7params: Framework7Parameters = {
   routes: [
@@ -39,6 +41,7 @@ export default () => {
   const [loading, setLoading] = useState(true);
   const [installed, setInstalled] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(listenForBeforeInstallPrompt, []);
   useEffect(listenForDOMContentLoaded, []);
@@ -113,16 +116,26 @@ export default () => {
     setInstallPromptEvent(null);
   }
 
+  function showInstallInstructions() {
+    setShowInstructions(true);
+  }
+
+  function hideInstallInstructions() {
+    setShowInstructions(false);
+  }
+
   return (
     <App {...f7params}>
       <View>
       <Page>
+        <InstallInstructions opened={showInstructions} close={hideInstallInstructions} />
       {canInstall && !installed && <BannerScrolling text={"install meeeeee"} onClick={promptInstall} />}
-      {!canInstall && !installed && <InstallationBanner text={"install with Safari on iOS"} />}
-      {!canInstall && !installed && <InstallationBanner text={"install with Chrome on Android"} />}
+      {!canInstall && !installed && <InstallationBanner text={"install with Safari on iOS"} onClick={showInstallInstructions} />}
+      {!canInstall && !installed && <InstallationBanner text={"install with Chrome on Android"} onClick={showInstallInstructions} />}
       {!installed && <Home />}
       {installed && <Main userId={userId} />}
-      </Page></View>
+      </Page>
+      </View>
     </App>
   )
 }
