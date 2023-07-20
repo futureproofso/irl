@@ -217,7 +217,7 @@ const Main = (props: Props) => {
           <List dividersIos simpleList>
             {JSON.parse(daps).map((message: any, index: any) => (
               <ListItem key={`${message.timetoken}:${message.publisher}`}>
-                {message.message}
+                {JSON.parse(message.message)["message"]}
               </ListItem>
             ))}
           </List>

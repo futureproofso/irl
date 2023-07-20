@@ -100,7 +100,7 @@ const SearchInput = (props: Props) => {
       <fieldset className="field-container">
         <input
           type="text"
-          placeholder="friend handle"
+          placeholder="handle"
           className="field"
           onChange={handleChange}
         />
