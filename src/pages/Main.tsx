@@ -78,15 +78,19 @@ const Main = (props: Props) => {
   function fetchHistoricalProfiles() {
     async function getLatestProfileUpdates() {
       const lastTimestamp = await props.privateDb.getProfilesFetchTimestamp();
-      const result = await pubnub.fetchMessages({
+      console.log("lastts", lastTimestamp)
+      const params: any = {
         channels: [CHANNEL_PROFILES],
         count: 100,
         includeMessageType: true,
         includeUUID: true,
         includeMeta: true,
         includeMessageActions: false,
-        end: lastTimestamp,
-      });
+      };
+      if (lastTimestamp) {
+        params['end'] = lastTimestamp;
+      }
+      const result = await pubnub.fetchMessages(params);
       if (result.channels[CHANNEL_PROFILES]) {
         const length = result.channels[CHANNEL_PROFILES].length;
         if (length > 0) {
@@ -101,15 +105,19 @@ const Main = (props: Props) => {
             await props.privateDb.saveProfilesFetchTimestamp(nextTimestamp);
             await Promise.all(
               updates.map(async (profileUpdate) => {
-                if (dedupe[profileUpdate.publisher]) {
+                if (dedupe[profileUpdate.uuid]) {
                   return;
                 }
-                dedupe[profileUpdate.publisher] = profileUpdate;
+                dedupe[profileUpdate.uuid] = profileUpdate;
                 console.log(profileUpdate);
+                const remoteHandle = JSON.parse(profileUpdate.message)["handle"];
+                if (remoteHandle) {
+                await props.privateDb.saveRemoteHandle(profileUpdate.uuid, remoteHandle);
                 await props.privateDb.saveRemoteProfile(
                   profileUpdate.uuid,
                   profileUpdate.message,
                 );
+                }
               }),
             );
           }
