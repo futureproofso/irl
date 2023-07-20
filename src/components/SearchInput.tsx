@@ -23,7 +23,9 @@ const SearchInput = (props: Props) => {
 
   function handleChange(e: any) {
     e.preventDefault();
-    setHandle(e.target.value);
+    if (e.target.value && e.target.value !== "") {
+      setHandle((e.target.value as string).toLowerCase());
+    }
     if (notFound) setNotFound(false);
   }
 

@@ -82,7 +82,7 @@ export class idbDatabase implements PrivateDatabase {
 
   async getRemoteAddress(handle: string): Promise<string | undefined> {
     if (this._db) {
-      return await this._db.get(DB_HANDLES_STORE_NAME, handle);
+      return await this._db.get(DB_HANDLES_STORE_NAME, handle.toLowerCase());
     } else {
       throw Error("Database is not set up");
     }
@@ -98,7 +98,7 @@ export class idbDatabase implements PrivateDatabase {
 
   async saveRemoteHandle(userAddress: string, handle: string): Promise<void> {
     if (this._db) {
-      await this._db.put(DB_HANDLES_STORE_NAME, userAddress, handle);
+      await this._db.put(DB_HANDLES_STORE_NAME, userAddress, handle.toLowerCase());
     } else {
       throw Error("Database is not set up");
     }

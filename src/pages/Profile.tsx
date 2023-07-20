@@ -50,7 +50,7 @@ const Profile = (props: Props) => {
         const profile = JSON.parse(data);
         profile.imageUrl && setImageUrl(profile.imageUrl);
         profile.name && setName(profile.name);
-        profile.handle && setHandle(profile.handle);
+        profile.handle && setHandle(profile.handle.toLowerCase());
         profile.telegram && setTelegram(profile.telegram);
         profile.phone && setPhone(profile.phone);
         profile.email && setEmail(profile.email);
@@ -83,11 +83,13 @@ const Profile = (props: Props) => {
 
   async function handleSubmit() {
     if (loading) return;
+    if (!handle) return;
+    if (handle == "") return;
     setLoading(true);
     const profileData = {
       imageUrl,
       name,
-      handle,
+      handle: handle.toLowerCase(),
       telegram,
       phone,
       email,

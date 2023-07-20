@@ -75,7 +75,7 @@ const ProfileFrozen = (props: Props) => {
       const profile = JSON.parse(data);
       profile.imageUrl && setImageUrl(profile.imageUrl);
       profile.name && setName(profile.name);
-      profile.handle && setHandle(profile.handle);
+      profile.handle && setHandle(profile.handle.toLowerCase());
       profile.telegram && setTelegram(profile.telegram);
       profile.phone && setPhone(profile.phone);
       profile.email && setEmail(profile.email);

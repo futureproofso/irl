@@ -96,8 +96,7 @@ const Main = (props: Props) => {
         if (e.channel == CHANNEL_PROFILES) {
           const handle = JSON.parse(e.message)["handle"];
           if (handle) {
-            console.log(handle);
-            updateRemoteHandle({userAddress: e.publisher, handle });
+            updateRemoteHandle({userAddress: e.publisher, handle: handle.toLowerCase() });
           }
           updateRemoteProfile({userAddress: e.publisher, profileData: e.message});
         }
@@ -109,7 +108,7 @@ const Main = (props: Props) => {
   }
 
   async function updateRemoteHandle({userAddress, handle}: any) {
-    await props.privateDb.saveRemoteHandle(userAddress, handle);
+    await props.privateDb.saveRemoteHandle(userAddress, handle.toLowerCase());
   }
 
   async function updateRemoteProfile({userAddress, profileData}: any) {

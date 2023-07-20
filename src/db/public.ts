@@ -52,7 +52,7 @@ export class gunDb implements PublicDatabase {
     return new Promise((resolve, reject) => {
       this._db.get(`fp:${space}-handles`).put(
         {
-          [handle]: userAddress,
+          [handle.toLowerCase()]: userAddress,
         },
         (ack: any) => {
           if (ack.err) reject(ack.err);
