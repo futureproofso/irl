@@ -1,8 +1,8 @@
 #irl-search-container {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 
-    /* animation properties */
+  /* animation properties */
   -moz-transform: translateY(-5%);
   -webkit-transform: translateY(-5%);
   transform: translateY(-5%);
@@ -50,12 +50,12 @@
 
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-$hint: #FAF8F8;
-$turqoise: #17EAD9;
-$cornflower-blue: #6078EA;
-$tundora: #4B4848;
-$electric-violet: #7C26F8;
-$snappy:  cubic-bezier(0.694,  0.048, 0.335, 1.000);
+$hint: #faf8f8;
+$turqoise: #17ead9;
+$cornflower-blue: #6078ea;
+$tundora: #4b4848;
+$electric-violet: #7c26f8;
+$snappy: cubic-bezier(0.694, 0.048, 0.335, 1);
 
 @keyframes spin {
   0% {
@@ -68,10 +68,10 @@ $snappy:  cubic-bezier(0.694,  0.048, 0.335, 1.000);
 
 @keyframes color-1 {
   0% {
-    background-color: #EB73B9;
+    background-color: #eb73b9;
   }
   100% {
-    background-color: #17EAD9;
+    background-color: #17ead9;
   }
 }
 
@@ -81,7 +81,7 @@ $snappy:  cubic-bezier(0.694,  0.048, 0.335, 1.000);
   text-shadow: none;
 }
 
-::-webkit-selection{
+::-webkit-selection {
   background: $cornflower-blue;
   color: white;
   text-shadow: none;
@@ -225,7 +225,8 @@ $snappy:  cubic-bezier(0.694,  0.048, 0.335, 1.000);
       animation: spin 0.85s infinite;
     }
     .x-up {
-      &:before, &:after {
+      &:before,
+      &:after {
         animation: color-1 0.85s infinite;
       }
       &:after {
@@ -233,7 +234,8 @@ $snappy:  cubic-bezier(0.694,  0.048, 0.335, 1.000);
       }
     }
     .x-down {
-      &:before, &:after {
+      &:before,
+      &:after {
         animation: color-1 0.85s infinite;
       }
       &:before {
@@ -279,19 +281,19 @@ $snappy:  cubic-bezier(0.694,  0.048, 0.335, 1.000);
   // border-radius: 3px !important;
   box-shadow: 0px 8px 15px rgba($tundora, 0.1) !important;
   transition: all 0.4s ease;
-background: #222534 !important;
-border-radius: 12.84px !important;
+  background: #222534 !important;
+  border-radius: 12.84px !important;
 
-font-family: 'Poppins';
-font-style: normal;
-font-weight: 600;
-font-size: 15px;
-line-height: 22px;
-/* identical to box height */
-letter-spacing: 0.07em;
-text-transform: uppercase;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  /* identical to box height */
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 
-color: #CBCBCB!important;
+  color: #cbcbcb !important;
 
   &:focus {
     outline: none !important;
@@ -321,18 +323,18 @@ color: #CBCBCB!important;
   align-items: center;
   justify-content: center;
 
-font-family: 'Poppins';
-font-style: normal;
-font-weight: 600;
-font-size: 15px;
-line-height: 22px;
-/* identical to box height */
-letter-spacing: 0.07em;
-text-transform: uppercase;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  /* identical to box height */
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 
-box-sizing: content-box;
-background: #0777E8;
-border-radius: 14px;
+  box-sizing: content-box;
+  background: #0777e8;
+  border-radius: 14px;
 
-color: #FFFFFF;
+  color: #ffffff;
 }

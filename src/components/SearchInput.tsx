@@ -72,13 +72,14 @@ const SearchInput = (props: Props) => {
           className="field"
           onChange={handleChange}
         />
-        <div className="icons-container">
-        </div>
+        <div className="icons-container"></div>
         {notFound && `¯\\_(ツ)_/¯`}
-        {!notFound && (<div className="irl-search-link" onClick={handleClick}>
-          {loading && <Spinner show={true} />}
-          {!loading && "Link"}
-        </div>)}
+        {!notFound && (
+          <div className="irl-search-link" onClick={handleClick}>
+            {loading && <Spinner show={true} />}
+            {!loading && "Link"}
+          </div>
+        )}
       </fieldset>
     </div>
   );

@@ -61,7 +61,9 @@ const Main = (props: Props) => {
         includeMessageActions: false,
       });
       if (result.channels[CHANNEL_DAPS]) {
-        const oldMessages = (result.channels[CHANNEL_DAPS] as Array<any>).reverse();
+        const oldMessages = (
+          result.channels[CHANNEL_DAPS] as Array<any>
+        ).reverse();
         setMessages(JSON.stringify(oldMessages));
       }
     }
@@ -76,7 +78,8 @@ const Main = (props: Props) => {
 
   function subscribeToChannel() {
     pubnub.subscribe({ channels: [CHANNEL_DAPS, CHANNEL_PROFILES] });
-    return () => pubnub.unsubscribe({ channels: [CHANNEL_DAPS, CHANNEL_PROFILES] });
+    return () =>
+      pubnub.unsubscribe({ channels: [CHANNEL_DAPS, CHANNEL_PROFILES] });
   }
 
   function createListener() {
@@ -96,9 +99,15 @@ const Main = (props: Props) => {
         if (e.channel == CHANNEL_PROFILES) {
           const handle = JSON.parse(e.message)["handle"];
           if (handle) {
-            updateRemoteHandle({userAddress: e.publisher, handle: handle.toLowerCase() });
+            updateRemoteHandle({
+              userAddress: e.publisher,
+              handle: handle.toLowerCase(),
+            });
           }
-          updateRemoteProfile({userAddress: e.publisher, profileData: e.message});
+          updateRemoteProfile({
+            userAddress: e.publisher,
+            profileData: e.message,
+          });
         }
       },
       presence: (presenceEvent: any) => {
@@ -107,23 +116,23 @@ const Main = (props: Props) => {
     };
   }
 
-  async function updateRemoteHandle({userAddress, handle}: any) {
+  async function updateRemoteHandle({ userAddress, handle }: any) {
     await props.privateDb.saveRemoteHandle(userAddress, handle.toLowerCase());
   }
 
-  async function updateRemoteProfile({userAddress, profileData}: any) {
+  async function updateRemoteProfile({ userAddress, profileData }: any) {
     await props.privateDb.saveRemoteProfile(userAddress, profileData);
   }
 
   async function publishProfileUpdate(profileData: string) {
-    await publishMessage({channel: CHANNEL_PROFILES, message: profileData})
+    await publishMessage({ channel: CHANNEL_PROFILES, message: profileData });
   }
 
   async function publishDap(dapData: string) {
-    await publishMessage({channel: CHANNEL_DAPS, message: dapData})
+    await publishMessage({ channel: CHANNEL_DAPS, message: dapData });
   }
 
-  async function publishMessage({channel, message }: any) {
+  async function publishMessage({ channel, message }: any) {
     if (!message) return;
     const payload = {
       channel,
@@ -163,21 +172,27 @@ const Main = (props: Props) => {
       </Navbar>
       {showSearchInput && (
         <Block>
-          <SearchInput space={SPACE} publicDb={props.publicDb} privateDb={props.privateDb} publicDbReady={props.publicDbReady} />
+          <SearchInput
+            space={SPACE}
+            publicDb={props.publicDb}
+            privateDb={props.privateDb}
+            publicDbReady={props.publicDbReady}
+          />
         </Block>
       )}
       <Block>
         {/* <input value={text} onChange={(e) => onChangeText(e.target.value)}></input>
                 <button onClick={publishMessage}>send</button> */}
 
-        {!showSearchInput && <List dividersIos simpleList>
-          {JSON.parse(messages).map((message: any, index: any) => (
-            <ListItem key={`${message.timetoken}:${message.publisher}`}>
-              {message.message.description}
-            </ListItem>
-          ))}
-        </List>
-}
+        {!showSearchInput && (
+          <List dividersIos simpleList>
+            {JSON.parse(messages).map((message: any, index: any) => (
+              <ListItem key={`${message.timetoken}:${message.publisher}`}>
+                {message.message.description}
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Block>
     </Page>
   );

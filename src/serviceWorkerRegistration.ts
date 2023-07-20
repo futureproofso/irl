@@ -28,13 +28,13 @@ type Config = {
 export function register(config?: Config) {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     try {
-    caches.keys().then(function(cacheNames) {
-      cacheNames.forEach(function(cacheName) {
-        caches.delete(cacheName);
-        console.log("Deleted cache", cacheName);
+      caches.keys().then(function (cacheNames) {
+        cacheNames.forEach(function (cacheName) {
+          caches.delete(cacheName);
+          console.log("Deleted cache", cacheName);
+        });
       });
-    });
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
     // The URL constructor is available in all browsers that support SW.
@@ -73,13 +73,13 @@ export function register(config?: Config) {
 export function registerLocal(config?: Config) {
   if (process.env.NODE_ENV !== "production" && "serviceWorker" in navigator) {
     try {
-    caches.keys().then(function(cacheNames) {
-      cacheNames.forEach(function(cacheName) {
-        caches.delete(cacheName);
-        console.log("Deleted cache", cacheName);
+      caches.keys().then(function (cacheNames) {
+        cacheNames.forEach(function (cacheName) {
+          caches.delete(cacheName);
+          console.log("Deleted cache", cacheName);
+        });
       });
-    });
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
     // The URL constructor is available in all browsers that support SW.

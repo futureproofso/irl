@@ -98,13 +98,20 @@ export class idbDatabase implements PrivateDatabase {
 
   async saveRemoteHandle(userAddress: string, handle: string): Promise<void> {
     if (this._db) {
-      await this._db.put(DB_HANDLES_STORE_NAME, userAddress, handle.toLowerCase());
+      await this._db.put(
+        DB_HANDLES_STORE_NAME,
+        userAddress,
+        handle.toLowerCase(),
+      );
     } else {
       throw Error("Database is not set up");
     }
   }
 
-  async saveRemoteProfile(userAddress: string, profileData: string): Promise<void> {
+  async saveRemoteProfile(
+    userAddress: string,
+    profileData: string,
+  ): Promise<void> {
     if (this._db) {
       await this._db.put(DB_PROFILES_STORE_NAME, profileData, userAddress);
     } else {
