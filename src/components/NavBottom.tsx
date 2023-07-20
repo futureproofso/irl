@@ -1,5 +1,5 @@
-import { Toolbar, Link } from "framework7-react";
 import { Component } from "react";
+import { Link, Toolbar } from "framework7-react";
 
 const NavBottom = () => {
   return (

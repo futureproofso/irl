@@ -1,7 +1,7 @@
+import { useState } from "react";
 import { Page } from "framework7-react";
 import splash from "../irlso.gif";
 import "../styles/Home.css";
-import { useState } from "react";
 import Info from "./Info";
 
 const Home = (props: any) => {

@@ -1,14 +1,14 @@
+import { useState } from "react";
 import {
   Block,
   BlockTitle,
-  Page,
-  Popup,
-  Navbar,
+  Link,
   NavRight,
   NavTitle,
-  Link,
+  Navbar,
+  Page,
+  Popup,
 } from "framework7-react";
-import { useState } from "react";
 import safari1 from "../images/safari1.png";
 import safari2 from "../images/safari2.png";
 import safari3 from "../images/safari3.png";

@@ -1,12 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import reportWebVitals from "./reportWebVitals";
-import Framework7 from "framework7/lite";
 import Framework7React from "framework7-react";
 import Popup from "framework7/components/popup";
+import Framework7 from "framework7/lite";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 Framework7.use([Framework7React, Popup]);
 

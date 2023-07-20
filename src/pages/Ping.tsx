@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Page, Navbar, Toolbar, Link } from "framework7-react";
+import { Link, Navbar, Page, Toolbar } from "framework7-react";
 import NavTop from "../components/NavTop";
 
 const Ping = ({ f7route }: any) => {

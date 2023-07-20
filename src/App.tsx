@@ -1,16 +1,14 @@
+import { useEffect, useMemo, useState } from "react";
 import { App, Page, View } from "framework7-react";
 import { Framework7Parameters } from "framework7/types";
-import { useEffect, useMemo, useState } from "react";
-
-import InstallationBanner from "./components/BannerScrolling";
-import BannerScrolling from "./components/BannerScrolling";
-import { idbDatabase } from "./db";
-import { publicDb } from "./db/public";
-import * as ku from "./keyUtils";
 import Home from "./pages/Home";
 import InstallInstructions from "./pages/InstallInstructions";
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
+import BannerScrolling from "./components/BannerScrolling";
+import { idbDatabase } from "./db";
+import { publicDb } from "./db/public";
+import * as ku from "./keyUtils";
 import "./styles/App.css";
 
 const f7params: Framework7Parameters = {
@@ -144,13 +142,13 @@ export default () => {
             <BannerScrolling text={"install meeeeee"} onClick={promptInstall} />
           )}
           {!canInstall && !installed && (
-            <InstallationBanner
+            <BannerScrolling
               text={"install with Safari on iOS"}
               onClick={showInstallInstructions}
             />
           )}
           {!canInstall && !installed && (
-            <InstallationBanner
+            <BannerScrolling
               text={"install with Chrome on Android"}
               onClick={showInstallInstructions}
             />

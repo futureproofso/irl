@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Fab, FabButtons, Icon } from "framework7-react";
 import Profile from "../pages/Profile";
+
 const { Person } = require("framework7-icons/react");
 
 const ProfileButton = () => {

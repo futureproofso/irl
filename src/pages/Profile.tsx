@@ -1,19 +1,19 @@
+import { useEffect, useState } from "react";
 import {
   Block,
   BlockTitle,
-  Page,
-  Popup,
-  Navbar,
-  NavRight,
-  NavTitle,
+  Input,
   Link,
   List,
-  Input,
   ListInput,
+  NavRight,
+  NavTitle,
+  Navbar,
+  Page,
+  Popup,
 } from "framework7-react";
-import { useEffect, useState } from "react";
-import "../styles/Profile.css";
 import placeholderImage from "../images/avatar_placeholder.png";
+import "../styles/Profile.css";
 
 const Profile = (props: any) => {
   const [loading, setLoading] = useState(false);

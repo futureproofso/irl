@@ -1,5 +1,5 @@
-import { Navbar, Link } from "framework7-react";
 import { Component } from "react";
+import { Link, Navbar } from "framework7-react";
 import { f7 } from "framework7-react";
 
 const NavTop = (props: any) => {

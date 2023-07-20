@@ -1,6 +1,6 @@
-import { Page, Navbar, Link } from "framework7-react";
-import NavTop from "../components/NavTop";
+import { Link, Navbar, Page } from "framework7-react";
 import NavBottom from "../components/NavBottom";
+import NavTop from "../components/NavTop";
 
 const Frame = (props: any) => (
   <Page name={props.pageName}>

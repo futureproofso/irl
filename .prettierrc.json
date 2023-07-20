@@ -7,7 +7,7 @@
     "arrowParens": "always",
     "endOfLine": "lf",
     "plugins": ["@trivago/prettier-plugin-sort-imports"],
-    "importOrder": ["^pages/(.*)$", "^components/(.*)$", "^[./]" ],
-    "importOrderSeparation": true,
+    "importOrder": ["^react$", "<THIRD_PARTY_MODULES>", "^\\.\/pages/(.*)$", "^\\.\/components/(.*)$", "^[./]" ],
+    "importOrderSeparation": false,
     "importOrderSortSpecifiers": true
 }

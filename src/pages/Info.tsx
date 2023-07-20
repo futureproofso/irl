@@ -1,13 +1,13 @@
+import { useEffect, useState } from "react";
 import {
   Block,
-  Page,
-  Popup,
-  Navbar,
+  Link,
   NavRight,
   NavTitle,
-  Link,
+  Navbar,
+  Page,
+  Popup,
 } from "framework7-react";
-import { useEffect, useState } from "react";
 
 const Info = (props: any) => {
   const [iOSStandalone, setIOSStandalone] = useState<any>("");

@@ -1,21 +1,22 @@
+import { useEffect, useMemo, useState } from "react";
 import {
   Block,
   BlockTitle,
-  ListItem,
   Link,
   List,
-  Navbar,
+  ListItem,
   NavLeft,
   NavRight,
+  Navbar,
   Page,
   Searchbar,
   Toolbar,
 } from "framework7-react";
-import { useEffect, useMemo, useState } from "react";
-import ProfileButton from "../components/ProfileButton";
-import "./Main.css";
 import AddButton from "../components/AddButton";
+import ProfileButton from "../components/ProfileButton";
 import SearchInput from "../components/SearchInput";
+import "./Main.css";
+
 const PubNub = require("pubnub");
 const { Plus } = require("framework7-icons/react");
 

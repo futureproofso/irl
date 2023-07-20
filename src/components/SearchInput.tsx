@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./SearchInput.css";
+
 const { Search } = require("framework7-icons/react");
 
 const SearchInput = () => {
