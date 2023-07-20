@@ -46,18 +46,21 @@ const InstallInstructions = (props: any) => {
               slot="media"
               src={safari1}
               width="48"
+              height="80"
               style={{ maxWidth: "100%", borderRadius: "8px" }}
             />
             <img
               slot="media"
               src={safari2}
               width="48"
+              height="80"
               style={{ maxWidth: "100%", borderRadius: "8px" }}
             />
             <img
               slot="media"
               src={safari3}
               width="48"
+              height="80"
               style={{ maxWidth: "100%", borderRadius: "8px" }}
             />
           </div>
