@@ -17,7 +17,10 @@ import "./Main.css";
 const PubNub = require("pubnub");
 const { Plus } = require("framework7-icons/react");
 
-const CHANNEL = "tv_ribc";
+const ADMIN = "fp";
+const SPACE = "tv_ribc";
+const CHANNEL_PROFILES = `${ADMIN}:${SPACE}:profiles`;
+const CHANNEL_DAPS = `${ADMIN}:${SPACE}:daps`;
 
 interface Props {
   privateDb: PrivateDatabase;
@@ -50,15 +53,15 @@ const Main = (props: Props) => {
   function fetchHistoricalMessages() {
     async function getOlderMessages() {
       const result = await pubnub.fetchMessages({
-        channels: [CHANNEL],
+        channels: [CHANNEL_DAPS],
         count: 50,
         includeMessageType: true,
         includeUUID: true,
         includeMeta: true,
         includeMessageActions: false,
       });
-      if (result.channels[CHANNEL]) {
-        const oldMessages = (result.channels[CHANNEL] as Array<any>).reverse();
+      if (result.channels[CHANNEL_DAPS]) {
+        const oldMessages = (result.channels[CHANNEL_DAPS] as Array<any>).reverse();
         setMessages(JSON.stringify(oldMessages));
       }
     }
@@ -72,21 +75,32 @@ const Main = (props: Props) => {
   }
 
   function subscribeToChannel() {
-    pubnub.subscribe({ channels: [CHANNEL] });
-    return () => pubnub.unsubscribe({ channels: [CHANNEL] });
+    pubnub.subscribe({ channels: [CHANNEL_DAPS, CHANNEL_PROFILES] });
+    return () => pubnub.unsubscribe({ channels: [CHANNEL_DAPS, CHANNEL_PROFILES] });
   }
 
   function createListener() {
     return {
       status: (e: any) => {
         if (e.category === "PNConnectedCategory") {
-          console.log("Connected to pubsub channel", CHANNEL);
+          console.log("Connected to pubsub");
         }
       },
       message: (e: any) => {
-        setMessages((messages) => {
-          return JSON.stringify([e, ...JSON.parse(messages)]);
-        });
+        if (e.publisher == props.userAddress) return;
+        if (e.channel == CHANNEL_DAPS) {
+          setMessages((messages) => {
+            return JSON.stringify([e, ...JSON.parse(messages)]);
+          });
+        }
+        if (e.channel == CHANNEL_PROFILES) {
+          const handle = JSON.parse(e.message)["handle"];
+          if (handle) {
+            console.log(handle);
+            updateRemoteHandle({userAddress: e.publisher, handle });
+          }
+          updateRemoteProfile({userAddress: e.publisher, profileData: e.message});
+        }
       },
       presence: (presenceEvent: any) => {
         // handle presence
@@ -94,18 +108,29 @@ const Main = (props: Props) => {
     };
   }
 
-  async function publishMessage(e: any) {
-    e.preventDefault();
-    if (!text) return;
+  async function updateRemoteHandle({userAddress, handle}: any) {
+    await props.privateDb.saveRemoteHandle(userAddress, handle);
+  }
+
+  async function updateRemoteProfile({userAddress, profileData}: any) {
+    await props.privateDb.saveRemoteProfile(userAddress, profileData);
+  }
+
+  async function publishProfileUpdate(profileData: string) {
+    await publishMessage({channel: CHANNEL_PROFILES, message: profileData})
+  }
+
+  async function publishDap(dapData: string) {
+    await publishMessage({channel: CHANNEL_DAPS, message: dapData})
+  }
+
+  async function publishMessage({channel, message }: any) {
+    if (!message) return;
     const payload = {
-      channel: CHANNEL,
-      message: {
-        title: "post",
-        description: text,
-      },
+      channel,
+      message,
     };
     await pubnub.publish(payload);
-    onChangeText("");
   }
 
   function toggleSearchInput(e: any) {
@@ -125,11 +150,12 @@ const Main = (props: Props) => {
         <NavLeft className="irl-header">irl.so</NavLeft>
         <NavRight className="irl-header-icons">
           <ProfileButton
-            space={CHANNEL}
+            space={SPACE}
             userAddress={props.userAddress}
             privateDb={props.privateDb}
             publicDb={props.publicDb}
             privateDbReady={props.privateDbReady}
+            onSave={publishProfileUpdate}
           />
           <div onClick={toggleSearchInput}>
             <Plus />
@@ -138,7 +164,7 @@ const Main = (props: Props) => {
       </Navbar>
       {showSearchInput && (
         <Block>
-          <SearchInput space={CHANNEL} publicDb={props.publicDb} privateDb={props.privateDb} publicDbReady={props.publicDbReady} />
+          <SearchInput space={SPACE} publicDb={props.publicDb} privateDb={props.privateDb} publicDbReady={props.publicDbReady} />
         </Block>
       )}
       <Block>

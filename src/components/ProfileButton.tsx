@@ -12,6 +12,7 @@ interface Props {
   privateDb: PrivateDatabase;
   privateDbReady: boolean;
   publicDb: PublicDatabase;
+  onSave: (profileData: string) => Promise<void>;
 }
 
 const ProfileButton = (props: Props) => {
@@ -38,6 +39,7 @@ const ProfileButton = (props: Props) => {
         privateDb={props.privateDb}
         publicDb={props.publicDb}
         privateDbReady={props.privateDbReady}
+        onSave={props.onSave}
       />
     </div>
   );

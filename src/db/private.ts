@@ -1,9 +1,11 @@
 /* eslint-disable no-restricted-globals */
 import { IDBPDatabase, openDB } from "idb";
 
-const DB_NAME = "main";
+const DB_NAME = "fp";
 const DB_VERSION = 1;
-const DB_STORE_NAME = "settings";
+const DB_SETTINGS_STORE_NAME = "settings";
+const DB_HANDLES_STORE_NAME = "handles";
+const DB_PROFILES_STORE_NAME = "profiles";
 
 export interface PrivateDatabase {
   _db: any;
@@ -11,11 +13,15 @@ export interface PrivateDatabase {
   setup(): Promise<void>;
   getPublicKey(): Promise<JsonWebKey>;
   getProfile(): Promise<string | undefined>;
+  getRemoteAddress(handle: string): Promise<string | undefined>;
+  getRemoteProfile(userAddress: string): Promise<string | undefined>;
   saveKeypair(keypair: {
     publicKey: JsonWebKey;
     privateKey: JsonWebKey;
   }): Promise<void>;
   saveProfile(profileData: string): Promise<void>;
+  saveRemoteHandle(userAddress: string, handle: string): Promise<void>;
+  saveRemoteProfile(userAddress: string, profileData: string): Promise<void>;
 }
 
 export class idbDatabase implements PrivateDatabase {
@@ -31,7 +37,9 @@ export class idbDatabase implements PrivateDatabase {
     console.log("Setting up database");
     this._db = await openDB(DB_NAME, DB_VERSION, {
       upgrade(db) {
-        db.createObjectStore(DB_STORE_NAME);
+        db.createObjectStore(DB_SETTINGS_STORE_NAME);
+        db.createObjectStore(DB_HANDLES_STORE_NAME);
+        db.createObjectStore(DB_PROFILES_STORE_NAME);
       },
     });
     console.log("Setup complete");
@@ -40,7 +48,7 @@ export class idbDatabase implements PrivateDatabase {
 
   async getPublicKey() {
     if (this._db) {
-      const keypair = await this._db.get(DB_STORE_NAME, "keypair");
+      const keypair = await this._db.get(DB_SETTINGS_STORE_NAME, "keypair");
       if (keypair) {
         return keypair.publicKey;
       }
@@ -49,7 +57,7 @@ export class idbDatabase implements PrivateDatabase {
 
   async getProfile(): Promise<string | undefined> {
     if (this._db) {
-      return await this._db.get(DB_STORE_NAME, "profile");
+      return await this._db.get(DB_SETTINGS_STORE_NAME, "profile");
     } else {
       throw Error("Database is not set up");
     }
@@ -60,13 +68,45 @@ export class idbDatabase implements PrivateDatabase {
     privateKey: JsonWebKey;
   }): Promise<void> {
     if (this._db) {
-      await this._db.put(DB_STORE_NAME, keypair, "keypair");
+      await this._db.put(DB_SETTINGS_STORE_NAME, keypair, "keypair");
     }
   }
 
   async saveProfile(profileData: string): Promise<void> {
     if (this._db) {
-      await this._db.put(DB_STORE_NAME, profileData, "profile");
+      await this._db.put(DB_SETTINGS_STORE_NAME, profileData, "profile");
+    } else {
+      throw Error("Database is not set up");
+    }
+  }
+
+  async getRemoteAddress(handle: string): Promise<string | undefined> {
+    if (this._db) {
+      return await this._db.get(DB_HANDLES_STORE_NAME, handle);
+    } else {
+      throw Error("Database is not set up");
+    }
+  }
+
+  async getRemoteProfile(userAddress: string): Promise<string | undefined> {
+    if (this._db) {
+      return await this._db.get(DB_PROFILES_STORE_NAME, userAddress);
+    } else {
+      throw Error("Database is not set up");
+    }
+  }
+
+  async saveRemoteHandle(userAddress: string, handle: string): Promise<void> {
+    if (this._db) {
+      await this._db.put(DB_HANDLES_STORE_NAME, userAddress, handle);
+    } else {
+      throw Error("Database is not set up");
+    }
+  }
+
+  async saveRemoteProfile(userAddress: string, profileData: string): Promise<void> {
+    if (this._db) {
+      await this._db.put(DB_PROFILES_STORE_NAME, profileData, userAddress);
     } else {
       throw Error("Database is not set up");
     }

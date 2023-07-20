@@ -23,6 +23,7 @@ interface Props {
   privateDbReady: boolean;
   publicDb: PublicDatabase;
   userAddress: string;
+  onSave: (profileData: string) => Promise<void>;
 }
 
 const Profile = (props: Props) => {
@@ -94,19 +95,18 @@ const Profile = (props: Props) => {
       twitter,
       instagram,
     };
-    await (props.privateDb as PrivateDatabase).saveProfile(
-      JSON.stringify(profileData),
-    );
-    await props.publicDb.publishHandle({
-      space: props.space,
-      userAddress: props.userAddress,
-      handle,
-    });
-    await props.publicDb.publishProfile({
-      space: props.space,
-      userAddress: props.userAddress,
-      profileData: JSON.stringify(profileData),
-    });
+    await props.privateDb.saveProfile(JSON.stringify(profileData));
+    // await props.publicDb.publishHandle({
+    //   space: props.space,
+    //   userAddress: props.userAddress,
+    //   handle,
+    // });
+    // await props.publicDb.publishProfile({
+    //   space: props.space,
+    //   userAddress: props.userAddress,
+    //   profileData: JSON.stringify(profileData),
+    // });
+    await props.onSave(JSON.stringify(profileData));
     setIsEditing(false);
     setLoading(false);
   }

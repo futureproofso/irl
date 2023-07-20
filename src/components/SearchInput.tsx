@@ -31,15 +31,9 @@ const SearchInput = (props: Props) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
-    const userAddress = await props.publicDb.getUserAddress({
-      space: props.space,
-      handle,
-    });
+    const userAddress = await props.privateDb.getRemoteAddress(handle);
     if (userAddress) {
-      const userProfile = await props.publicDb.getProfile({
-        space: props.space,
-        userAddress,
-      });
+      const userProfile = await props.privateDb.getRemoteProfile(userAddress);
       if (userProfile) {
         setProfile(userProfile);
         setShowProfile(true);
@@ -77,16 +71,12 @@ const SearchInput = (props: Props) => {
           onChange={handleChange}
         />
         <div className="icons-container">
-          {/* <div className="icon-search"></div>
-    <div className="icon-close">
-      <div className="x-up"></div>
-      <div className="x-down"></div>
-    </div> */}
         </div>
-        <div className="irl-search-link" onClick={handleClick}>
+        {notFound && `¯\\_(ツ)_/¯`}
+        {!notFound && (<div className="irl-search-link" onClick={handleClick}>
           {loading && <Spinner show={true} />}
           {!loading && "Link"}
-        </div>
+        </div>)}
       </fieldset>
     </div>
   );
