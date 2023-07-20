@@ -2,6 +2,11 @@
   display: flex;
   width: 100%;
   padding-block: 20px;
+  font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
 
   /* animation properties */
   -moz-transform: translateX(0%);
@@ -19,6 +24,10 @@
   text-wrap: nowrap;
   white-space: nowrap;
   margin-inline: 20px;
+  background: white;
+  color: black;
+  padding: 8px 40px;
+  text-transform: uppercase;
 }
 
 /* for Firefox */
