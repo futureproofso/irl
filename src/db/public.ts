@@ -16,7 +16,7 @@ export class publicDb implements PublicDatabase {
   }
 
   async setup() {
-    this._db = Gun(['https://gun-manhattan.herokuapp.com/gun']);
+    this._db = Gun(["https://gun-manhattan.herokuapp.com/gun"]);
     this.setupComplete = true;
   }
 
@@ -26,7 +26,7 @@ export class publicDb implements PublicDatabase {
         .get(`${appName}-handles`)
         .get(handle)
         .once(async (value: any) => {
-            resolve(value);
+          resolve(value);
         });
     });
   }
@@ -37,15 +37,15 @@ export class publicDb implements PublicDatabase {
         .get(`${appName}-profiles`)
         .get(publicKey)
         .once(async (value: any) => {
-            resolve(value);
+          resolve(value);
         });
     });
   }
 
   publishHandle({ appName, handle, publicKey }: any) {
     this._db.get(`${appName}-handles`).put({
-        [handle]: publicKey
-    })
+      [handle]: publicKey,
+    });
   }
 
   publishProfile({ appName, publicKey, profile }: any) {

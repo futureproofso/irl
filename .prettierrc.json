@@ -5,5 +5,9 @@
     "singleQuote": false,
     "bracketSpacing": true,
     "arrowParens": "always",
-    "endOfLine": "lf"
+    "endOfLine": "lf",
+    "plugins": ["@trivago/prettier-plugin-sort-imports"],
+    "importOrder": ["^pages/(.*)$", "^components/(.*)$", "^[./]" ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
 }

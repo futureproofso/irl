@@ -1,16 +1,19 @@
 /* eslint-disable no-restricted-globals */
-import { IDBPDatabase, openDB } from 'idb';
+import { IDBPDatabase, openDB } from "idb";
 
-const DB_NAME = 'main';
+const DB_NAME = "main";
 const DB_VERSION = 1;
-const DB_STORE_NAME = 'settings';
+const DB_STORE_NAME = "settings";
 
 export interface PrivateDatabase {
   _db: any;
   setupComplete: boolean;
   setup(): Promise<void>;
   getPublicKey(): Promise<JsonWebKey>;
-  saveKeypair(keypair: { publicKey: JsonWebKey, privateKey: JsonWebKey }): Promise<void>;
+  saveKeypair(keypair: {
+    publicKey: JsonWebKey;
+    privateKey: JsonWebKey;
+  }): Promise<void>;
 }
 
 export class idbDatabase implements PrivateDatabase {
@@ -40,7 +43,10 @@ export class idbDatabase implements PrivateDatabase {
     }
   }
 
-  async saveKeypair(keypair: { publicKey: JsonWebKey, privateKey: JsonWebKey }): Promise<void> {
+  async saveKeypair(keypair: {
+    publicKey: JsonWebKey;
+    privateKey: JsonWebKey;
+  }): Promise<void> {
     if (this._db) {
       await this._db.put(DB_STORE_NAME, keypair, "keypair");
     }

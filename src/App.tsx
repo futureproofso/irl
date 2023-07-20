@@ -1,45 +1,36 @@
-import { App, View, Page, Navbar, Toolbar, Link, f7 } from 'framework7-react';
-import { useEffect, useMemo, useState } from 'react';
+import { App, Page, View } from "framework7-react";
+import { Framework7Parameters } from "framework7/types";
+import { useEffect, useMemo, useState } from "react";
 
-import Home from "./pages/Home";
-import Main from "./pages/Main";
-import Ping from "./pages/Ping";
-import Profile from './pages/Profile';
-import NavBottom from './components/NavBottom';
+import InstallationBanner from "./components/BannerScrolling";
+import BannerScrolling from "./components/BannerScrolling";
 import { idbDatabase } from "./db";
+import { publicDb } from "./db/public";
 import * as ku from "./keyUtils";
-import { Framework7Parameters } from 'framework7/types';
-import InstallationBanner from './components/BannerScrolling';
-import BannerScrolling from './components/BannerScrolling';
-import ProfileButton from './components/ProfileButton';
+import Home from "./pages/Home";
+import InstallInstructions from "./pages/InstallInstructions";
+import Main from "./pages/Main";
+import Profile from "./pages/Profile";
 import "./styles/App.css";
-import InstallInstructions from './pages/InstallInstructions';
-import { publicDb } from './db/public';
 
 const f7params: Framework7Parameters = {
   routes: [
     {
-      path: '/',
+      path: "/",
       component: Home,
     },
     {
-      path: '/profile/:profileId/',
-      component: Profile
-    }
+      path: "/profile/:profileId/",
+      component: Profile,
+    },
   ],
   name: "irl.so",
-  darkMode: true
-}
+  darkMode: true,
+};
 
 export default () => {
-  const db: idbDatabase = useMemo(
-    () => new idbDatabase(),
-    []
-  );
-  const pubDb: any = useMemo(
-    () => new publicDb(),
-    []
-  );
+  const db: idbDatabase = useMemo(() => new idbDatabase(), []);
+  const pubDb: any = useMemo(() => new publicDb(), []);
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
   const [dbSetupComplete, setDbSetupComplete] = useState(false);
   const [pubDbSetupCompolete, setPubDbSetupComplete] = useState(false);
@@ -58,30 +49,35 @@ export default () => {
 
   function listenForBeforeInstallPrompt() {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () =>
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
   }
 
   function handleBeforeInstallPrompt(e: any) {
-    console.log("handle before install prompt")
+    console.log("handle before install prompt");
     e.preventDefault();
     setInstallPromptEvent(e);
     setCanInstall(true);
   }
 
   function listenForDOMContentLoaded() {
-    window.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
-    return () => window.removeEventListener('DOMContentLoaded', handleDOMContentLoaded);
+    window.addEventListener("DOMContentLoaded", handleDOMContentLoaded);
+    return () =>
+      window.removeEventListener("DOMContentLoaded", handleDOMContentLoaded);
   }
 
   function handleDOMContentLoaded() {
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
       setInstalled(true);
     }
     // METRICS: display mode
   }
 
   function detectInstallation() {
-    if (("standalone" in window.navigator) && window.navigator.standalone) {
+    if ("standalone" in window.navigator && window.navigator.standalone) {
       setInstalled(true);
     }
     if (window.location.search === "?d=a") {
@@ -139,15 +135,30 @@ export default () => {
   return (
     <App {...f7params}>
       <View>
-      <Page>
-        <InstallInstructions opened={showInstructions} close={hideInstallInstructions} />
-      {canInstall && !installed && <BannerScrolling text={"install meeeeee"} onClick={promptInstall} />}
-      {!canInstall && !installed && <InstallationBanner text={"install with Safari on iOS"} onClick={showInstallInstructions} />}
-      {!canInstall && !installed && <InstallationBanner text={"install with Chrome on Android"} onClick={showInstallInstructions} />}
-      {!installed && <Home />}
-      {installed && <Main userId={userId} />}
-      </Page>
+        <Page>
+          <InstallInstructions
+            opened={showInstructions}
+            close={hideInstallInstructions}
+          />
+          {canInstall && !installed && (
+            <BannerScrolling text={"install meeeeee"} onClick={promptInstall} />
+          )}
+          {!canInstall && !installed && (
+            <InstallationBanner
+              text={"install with Safari on iOS"}
+              onClick={showInstallInstructions}
+            />
+          )}
+          {!canInstall && !installed && (
+            <InstallationBanner
+              text={"install with Chrome on Android"}
+              onClick={showInstallInstructions}
+            />
+          )}
+          {!installed && <Home />}
+          {installed && <Main userId={userId} />}
+        </Page>
       </View>
     </App>
-  )
-}
+  );
+};
