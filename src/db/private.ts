@@ -10,10 +10,12 @@ export interface PrivateDatabase {
   setupComplete: boolean;
   setup(): Promise<void>;
   getPublicKey(): Promise<JsonWebKey>;
+  getProfile(): Promise<string | undefined>;
   saveKeypair(keypair: {
     publicKey: JsonWebKey;
     privateKey: JsonWebKey;
   }): Promise<void>;
+  saveProfile(profileData: string): Promise<void>;
 }
 
 export class idbDatabase implements PrivateDatabase {
@@ -26,11 +28,13 @@ export class idbDatabase implements PrivateDatabase {
   }
 
   async setup() {
+    console.log("Setting up database");
     this._db = await openDB(DB_NAME, DB_VERSION, {
       upgrade(db) {
         db.createObjectStore(DB_STORE_NAME);
       },
     });
+    console.log("Setup complete");
     this.setupComplete = true;
   }
 
@@ -43,12 +47,28 @@ export class idbDatabase implements PrivateDatabase {
     }
   }
 
+  async getProfile(): Promise<string | undefined> {
+    if (this._db) {
+      return await this._db.get(DB_STORE_NAME, "profile");
+    } else {
+      throw Error("Database is not set up");
+    }
+  }
+
   async saveKeypair(keypair: {
     publicKey: JsonWebKey;
     privateKey: JsonWebKey;
   }): Promise<void> {
     if (this._db) {
       await this._db.put(DB_STORE_NAME, keypair, "keypair");
+    }
+  }
+
+  async saveProfile(profileData: string): Promise<void> {
+    if (this._db) {
+      await this._db.put(DB_STORE_NAME, profileData, "profile");
+    } else {
+      throw Error("Database is not set up");
     }
   }
 }

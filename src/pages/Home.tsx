@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Page } from "framework7-react";
 import splash from "../irlso.gif";
 import "../styles/Home.css";
 import Info from "./Info";

@@ -29,26 +29,67 @@ font-style: normal;
 font-weight: 600;
 font-size: 27px;
 line-height: 40px;
+color: #FFFFFF;
+}
 
+.irl-profile-name-input {
+    display: inline-flex;
+    margin: 6px;
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 27px;
+line-height: 40px;
 color: #FFFFFF;
 }
 
 .irl-profile-handle {
-
 font-family: 'Poppins';
 font-style: normal;
 font-weight: 500;
 font-size: 14px;
 line-height: 21px;
-/* identical to box height */
-
 color: #E5E5E9;
 
 opacity: 0.52;
 }
 
+.irl-profile-handle-input {
+    margin: 6px;
+    display: inline-flex;
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+color: #E5E5E9;
+
+opacity: 0.52;
+}
+
+.irl-profile-link-input {
+    margin-top: 10px;
+    box-sizing: content-box;
+
+background: #222534;
+border-radius: 12.84px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 15px;
+line-height: 22px;
+/* identical to box height */
+letter-spacing: 0.07em;
+text-transform: uppercase;
+
+color: #CBCBCB;
+}
+
 .irl-profile-link {
     margin-top: 10px;
+    box-sizing: content-box;
+    padding: 10px;
 
 background: #222534;
 border-radius: 12.84px;
@@ -66,23 +107,44 @@ color: #CBCBCB;
 }
 
 .irl-profile-save {
+    box-sizing: border-box;
 background: #0777E8;
 border-radius: 14px;
 
 /* Save changes */
 height: 40px;
-padding-top: 20px;
 
 font-family: 'Poppins';
 font-style: normal;
 font-weight: 600;
 font-size: 16px;
-line-height: 24px;
+line-height: 40px;
 /* identical to box height */
 letter-spacing: 0.03em;
 text-transform: uppercase;
 
 color: #FFFFFF;
+}
+
+.irl-profile-edit {
+    box-sizing: border-box;
+border: 0.737037px solid #444A5E;
+border-radius: 29.4815px;
+
+/* Save changes */
+height: 40px;
+padding-top: 10px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+/* identical to box height */
+letter-spacing: 0.03em;
+text-transform: uppercase;
+
+color: #FFFFFF;
+
 }
 
 .custom-file-upload {

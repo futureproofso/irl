@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
 import {
   Block,
-  BlockTitle,
-  Input,
   Link,
   List,
   ListInput,
   NavRight,
-  NavTitle,
   Navbar,
   Page,
   Popup,
 } from "framework7-react";
+import Spinner from "../components/Spinner";
+import { PrivateDatabase } from "../db/private";
+import { PublicDatabase } from "../db/public";
 import placeholderImage from "../images/avatar_placeholder.png";
 import "../styles/Profile.css";
 
-const Profile = (props: any) => {
+interface Props {
+  appName: string;
+  opened: boolean;
+  close: any;
+  privateDb: PrivateDatabase;
+  privateDbReady: boolean;
+  publicDb: PublicDatabase;
+  userAddress: string;
+}
+
+const Profile = (props: Props) => {
   const [loading, setLoading] = useState(false);
-  const [profileData, setProfileData] = useState({});
   const [imageFile, setImageFile] = useState();
   const [imageUrl, setImageUrl] = useState(placeholderImage);
   const [name, setName] = useState("");
@@ -30,9 +39,30 @@ const Profile = (props: any) => {
   const [instagram, setInstagram] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(loadProfileFromDb, []);
+  useEffect(loadProfileFromDb, [props.privateDb, props.privateDbReady]);
 
-  function loadProfileFromDb() {}
+  function loadProfileFromDb() {
+    setLoading(true);
+    async function loadData() {
+      const data = await (props.privateDb as PrivateDatabase).getProfile();
+      if (data) {
+        const profile = JSON.parse(data);
+        profile.imageUrl && setImageUrl(profile.imageUrl);
+        profile.name && setName(profile.name);
+        profile.handle && setHandle(profile.handle);
+        profile.telegram && setTelegram(profile.telegram);
+        profile.phone && setPhone(profile.phone);
+        profile.email && setEmail(profile.email);
+        profile.linkedin && setLinkedin(profile.linkedin);
+        profile.twitter && setTwitter(profile.twitter);
+        profile.instagram && setInstagram(profile.instagram);
+      }
+      setLoading(false);
+    }
+    if (props.privateDbReady) {
+      loadData();
+    }
+  }
 
   const uploadImage = (e: any) => {
     e.preventDefault();
@@ -51,7 +81,32 @@ const Profile = (props: any) => {
   };
 
   async function handleSubmit() {
+    if (loading) return;
     setLoading(true);
+    const profileData = {
+      imageUrl,
+      name,
+      handle,
+      telegram,
+      phone,
+      email,
+      linkedin,
+      twitter,
+      instagram,
+    };
+    await (props.privateDb as PrivateDatabase).saveProfile(
+      JSON.stringify(profileData),
+    );
+    await (props.publicDb as PublicDatabase).publishHandle({
+      space: props.appName,
+      publicKey: props.userAddress,
+      handle,
+    });
+    await (props.publicDb as PublicDatabase).publishProfile({
+      space: props.appName,
+      publicKey: props.userAddress,
+      profileData: JSON.stringify(profileData),
+    });
     setIsEditing(false);
     setLoading(false);
   }
@@ -73,58 +128,59 @@ const Profile = (props: any) => {
           </div>
         </label>
         <input id="photo-upload" type="file" onChange={uploadImage} />
+        <ListInput
+          className="irl-profile-name-input"
+          onChange={(e: any) => setName(e.target.value)}
+          value={name}
+          placeholder="your name"
+        />
+        <ListInput
+          className="irl-profile-handle-input"
+          onChange={(e: any) => setHandle(e.target.value)}
+          value={handle}
+          placeholder="@pickahandle"
+        />
         <List>
           <ListInput
-            className="irl-profile-name"
-            onChange={(e: any) => setName(e.target.value)}
-            value={name}
-            placeholder="your name"
-          />
-          <ListInput
-            className="irl-profile-handle"
-            onChange={(e: any) => setHandle(e.target.value)}
-            value={handle}
-            placeholder="@pickahandle"
-          />
-          <ListInput
-            className="irl-profile-link"
+            className="irl-profile-link-input"
             placeholder="telegram"
             onChange={(e: any) => setTelegram(e.target.value)}
             value={telegram}
           />
           <ListInput
-            className="irl-profile-link"
+            className="irl-profile-link-input"
             placeholder="phone"
             onChange={(e: any) => setPhone(e.target.value)}
             value={phone}
           />
           <ListInput
-            className="irl-profile-link"
+            className="irl-profile-link-input"
             placeholder="email"
             onChange={(e: any) => setEmail(e.target.value)}
             value={email}
           />
           <ListInput
-            className="irl-profile-link"
+            className="irl-profile-link-input"
             placeholder="linkedin"
             onChange={(e: any) => setLinkedin(e.target.value)}
             value={linkedin}
           />
           <ListInput
-            className="irl-profile-link"
+            className="irl-profile-link-input"
             placeholder="twitter"
             onChange={(e: any) => setTwitter(e.target.value)}
             value={twitter}
           />
           <ListInput
-            className="irl-profile-link"
+            className="irl-profile-link-input"
             placeholder="instagram"
             onChange={(e: any) => setInstagram(e.target.value)}
             value={instagram}
           />
         </List>
         <div className="irl-profile-save" onClick={handleSubmit}>
-          Save
+          {loading && <Spinner show={true} />}
+          {!loading && "Save"}
         </div>
       </form>
     );
@@ -135,30 +191,23 @@ const Profile = (props: any) => {
       <form onSubmit={toggleEditing}>
         <label className="custom-file-upload">
           <div className="irl-profile-img-wrap">
-            {props.imageUrl && <img src={imageUrl} />}
-            {!props.imageUrl && (
-              <svg
-                viewBox="64 64 896 896"
-                focusable="false"
-                data-icon="user"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M858.5 763.6a374 374 0 00-80.6-119.5 375.63 375.63 0 00-119.5-80.6c-.4-.2-.8-.3-1.2-.5C719.5 518 760 444.7 760 362c0-137-111-248-248-248S264 225 264 362c0 82.7 40.5 156 102.8 201.1-.4.2-.8.3-1.2.5-44.8 18.9-85 46-119.5 80.6a375.63 375.63 0 00-80.6 119.5A371.7 371.7 0 00136 901.8a8 8 0 008 8.2h60c4.4 0 7.9-3.5 8-7.8 2-77.2 33-149.5 87.8-204.3 56.7-56.7 132-87.9 212.2-87.9s155.5 31.2 212.2 87.9C779 752.7 810 825 812 902.2c.1 4.4 3.6 7.8 8 7.8h60a8 8 0 008-8.2c-1-47.8-10.9-94.3-29.5-138.2zM512 534c-45.9 0-89.1-17.9-121.6-50.4S340 407.9 340 362c0-45.9 17.9-89.1 50.4-121.6S466.1 190 512 190s89.1 17.9 121.6 50.4S684 316.1 684 362c0 45.9-17.9 89.1-50.4 121.6S557.9 534 512 534z"></path>
-              </svg>
-            )}
+            <img src={imageUrl} />
           </div>
         </label>
         <div className="irl-profile-name">{name}</div>
         <div className="irl-profile-handle">{handle}</div>
-        <div className="irl-profile-link">{linkedin}</div>
-        <div className="irl-profile-link">{email}</div>
-        <div className="irl-profile-link">{phone}</div>
-        <div className="irl-profile-link">{twitter}</div>
-        <div className="irl-profile-link">{instagram}</div>
-        <button type="submit" className="edit">
-          Edit Profile
-        </button>
+        <List>
+          {telegram && <div className="irl-profile-link">{telegram}</div>}
+          {phone && <div className="irl-profile-link">{phone}</div>}
+          {email && <div className="irl-profile-link">{email}</div>}
+          {linkedin && <div className="irl-profile-link">{linkedin}</div>}
+          {twitter && <div className="irl-profile-link">{twitter}</div>}
+          {instagram && <div className="irl-profile-link">{instagram}</div>}
+        </List>
+        <div className="irl-profile-edit" onClick={toggleEditing}>
+          {loading && <Spinner show={true} />}
+          {!loading && "Edit"}
+        </div>
       </form>
     );
   }
@@ -174,7 +223,7 @@ const Profile = (props: any) => {
       <Page name="profile">
         <Navbar>
           <NavRight>
-            <Link onClick={props.close}>X</Link>
+            <Link onClick={props.close}>Done</Link>
           </NavRight>
         </Navbar>
         <Block>

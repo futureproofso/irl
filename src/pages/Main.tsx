@@ -1,20 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Block,
-  BlockTitle,
-  Link,
   List,
   ListItem,
   NavLeft,
   NavRight,
   Navbar,
   Page,
-  Searchbar,
-  Toolbar,
 } from "framework7-react";
-import AddButton from "../components/AddButton";
 import ProfileButton from "../components/ProfileButton";
 import SearchInput from "../components/SearchInput";
+import { PrivateDatabase } from "../db/private";
+import { PublicDatabase } from "../db/public";
 import "./Main.css";
 
 const PubNub = require("pubnub");
@@ -22,16 +19,23 @@ const { Plus } = require("framework7-icons/react");
 
 const CHANNEL = "tv_ribc";
 
-const Main = (props: any) => {
+interface Props {
+  privateDb: PrivateDatabase;
+  privateDbReady: boolean;
+  publicDb: PublicDatabase;
+  userAddress: string;
+}
+
+const Main = (props: Props) => {
   const pubnub = useMemo(
     () =>
       new PubNub({
         publishKey: process.env.REACT_APP_PUBNUB_PUBLISH_KEY,
         subscribeKey: process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY,
-        userId: props.userId,
+        userId: props.userAddress,
         ssl: process.env.NODE_ENV == "production",
       }),
-    [props.userId],
+    [props.userAddress],
   );
 
   const [messages, setMessages] = useState("[]");
@@ -119,7 +123,13 @@ const Main = (props: any) => {
       <Navbar large>
         <NavLeft className="irl-header">irl.so</NavLeft>
         <NavRight className="irl-header">
-          <ProfileButton />
+          <ProfileButton
+            appName={CHANNEL}
+            userAddress={props.userAddress}
+            privateDb={props.privateDb}
+            publicDb={props.publicDb}
+            privateDbReady={props.privateDbReady}
+          />
           <span className="arrow-down-close" onClick={toggleSearchInput}>
             <Plus />
           </span>

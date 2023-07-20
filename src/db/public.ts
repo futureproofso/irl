@@ -4,9 +4,11 @@ export interface PublicDatabase {
   _db: any;
   setupComplete: boolean;
   setup(): Promise<void>;
+  publishHandle({ space, publicKey, handle }: any): Promise<any>;
+  publishProfile({ space, publicKey, profileData }: any): Promise<any>;
 }
 
-export class publicDb implements PublicDatabase {
+export class gunDb implements PublicDatabase {
   _db: any;
   setupComplete: boolean;
 
@@ -16,41 +18,59 @@ export class publicDb implements PublicDatabase {
   }
 
   async setup() {
-    this._db = Gun(["https://gun-manhattan.herokuapp.com/gun"]);
+    this._db = Gun();
     this.setupComplete = true;
   }
 
-  async getPublicKey({ appName, handle }: any) {
+  async getPublicKey({ space, handle }: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._db
-        .get(`${appName}-handles`)
+        .get(`fp:${space}-handles`)
         .get(handle)
         .once(async (value: any) => {
+          if (!value) reject(undefined);
           resolve(value);
         });
     });
   }
 
-  async getProfile({ appName, publicKey }: any) {
+  async getProfile({ space, publicKey }: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this._db
-        .get(`${appName}-profiles`)
+        .get(`fp:${space}-profiles`)
         .get(publicKey)
         .once(async (value: any) => {
+          if (!value) reject(undefined);
           resolve(value);
         });
     });
   }
 
-  publishHandle({ appName, handle, publicKey }: any) {
-    this._db.get(`${appName}-handles`).put({
-      [handle]: publicKey,
+  async publishHandle({ space, publicKey, handle }: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._db.get(`fp:${space}-handles`).put(
+        {
+          [handle]: publicKey,
+        },
+        (ack: any) => {
+          if (ack.err) reject(ack.err);
+          resolve(ack.ok);
+        },
+      );
     });
   }
 
-  publishProfile({ appName, publicKey, profile }: any) {
-    this._db.get(`${appName}-profiles`).put({
-      [publicKey]: profile,
+  async publishProfile({ space, publicKey, profileData }: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._db.get(`fp:${space}-profiles`).put(
+        {
+          [publicKey]: profileData,
+        },
+        (ack: any) => {
+          if (ack.err) reject(ack.err);
+          resolve(ack.ok);
+        },
+      );
     });
   }
 }

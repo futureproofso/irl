@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 import { Fab, FabButtons, Icon } from "framework7-react";
+import { PrivateDatabase } from "../db/private";
+import { PublicDatabase } from "../db/public";
 import Profile from "../pages/Profile";
 
 const { Person } = require("framework7-icons/react");
 
-const ProfileButton = () => {
+interface Props {
+  appName: string;
+  userAddress: string;
+  privateDb: PrivateDatabase;
+  privateDbReady: boolean;
+  publicDb: PublicDatabase;
+}
+
+const ProfileButton = (props: Props) => {
   const [showProfile, setShowProfile] = useState(false);
 
   function openProfile() {
@@ -20,7 +30,15 @@ const ProfileButton = () => {
       <span onClick={openProfile}>
         <Person />
       </span>
-      <Profile opened={showProfile} close={closeProfile} />
+      <Profile
+        appName={props.appName}
+        userAddress={props.userAddress}
+        opened={showProfile}
+        close={closeProfile}
+        privateDb={props.privateDb}
+        publicDb={props.publicDb}
+        privateDbReady={props.privateDbReady}
+      />
     </div>
   );
 };

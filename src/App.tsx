@@ -6,8 +6,8 @@ import InstallInstructions from "./pages/InstallInstructions";
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
 import BannerScrolling from "./components/BannerScrolling";
-import { idbDatabase } from "./db";
-import { publicDb } from "./db/public";
+import { PrivateDatabase, idbDatabase as privateDatabase } from "./db/private";
+import { PublicDatabase, gunDb as publicDatabase } from "./db/public";
 import * as ku from "./keyUtils";
 import "./styles/App.css";
 
@@ -27,12 +27,12 @@ const f7params: Framework7Parameters = {
 };
 
 export default () => {
-  const db: idbDatabase = useMemo(() => new idbDatabase(), []);
-  const pubDb: any = useMemo(() => new publicDb(), []);
+  const privateDb: PrivateDatabase = useMemo(() => new privateDatabase(), []);
+  const publicDb: PublicDatabase = useMemo(() => new publicDatabase(), []);
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
-  const [dbSetupComplete, setDbSetupComplete] = useState(false);
-  const [pubDbSetupCompolete, setPubDbSetupComplete] = useState(false);
-  const [userId, setUserId] = useState("temp");
+  const [privateDbReady, setPrivateDbReady] = useState(false);
+  const [publicDbReady, setPublicDbReady] = useState(false);
+  const [userAddress, setUserAddress] = useState("temp");
   const [loading, setLoading] = useState(true);
   const [installed, setInstalled] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
@@ -41,9 +41,9 @@ export default () => {
   useEffect(listenForBeforeInstallPrompt, []);
   useEffect(listenForDOMContentLoaded, []);
   useEffect(detectInstallation, []);
-  useEffect(setupPrivateDb, [db]);
-  useEffect(setupUserCreds, [dbSetupComplete]);
-  useEffect(setupPublicDb, [pubDb]);
+  useEffect(setupPrivateDb, [privateDb]);
+  useEffect(setupUserCreds, [privateDbReady]);
+  useEffect(setupPublicDb, [publicDb]);
 
   function listenForBeforeInstallPrompt() {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -84,28 +84,28 @@ export default () => {
   }
 
   function setupPrivateDb() {
-    db.setup().then(() => {
-      setDbSetupComplete(db.setupComplete);
+    privateDb.setup().then(() => {
+      setPrivateDbReady(privateDb.setupComplete);
     });
   }
 
   function setupPublicDb() {
-    pubDb.setup().then(() => {
-      setPubDbSetupComplete(pubDb.setupComplete);
+    publicDb.setup().then(() => {
+      setPublicDbReady(publicDb.setupComplete);
     });
   }
 
   function setupUserCreds() {
     async function setupUser() {
-      if (dbSetupComplete) {
-        let publicKey = await db.getPublicKey();
+      if (privateDbReady) {
+        let publicKey = await privateDb.getPublicKey();
         if (!publicKey) {
           const keypair = await ku.generateKeypair();
           publicKey = keypair.publicKey;
-          await db.saveKeypair(keypair);
+          await privateDb.saveKeypair(keypair);
         }
         const address = await ku.publicKeyToAddress(publicKey);
-        setUserId(address);
+        setUserAddress(address);
       }
     }
     setupUser();
@@ -153,8 +153,21 @@ export default () => {
               onClick={showInstallInstructions}
             />
           )}
-          {!installed && <Home />}
-          {installed && <Main userId={userId} />}
+          {!installed && (
+            <Home
+              userAddress={userAddress}
+              publicDb={publicDb}
+              privateDb={privateDb}
+            />
+          )}
+          {installed && (
+            <Main
+              userAddress={userAddress}
+              publicDb={publicDb}
+              privateDb={privateDb}
+              privateDbReady={privateDbReady}
+            />
+          )}
         </Page>
       </View>
     </App>
